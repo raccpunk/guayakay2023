@@ -1,0 +1,72 @@
+<div class="bg-light min-vh-100 d-flex flex-row align-items-center divFull">
+  <c-container>
+    <c-row class="justify-content-center">
+      <c-col sm="10" md="4">
+        <c-card-group>
+          <c-card class="p-4" class="di  v2">
+            <c-card-body >
+              <div style="text-align: center;">
+              <img class="img-fluid" src="assets/lotto/logo1.png" class="imgLogin" />
+            </div>
+              <hr>
+              <form 
+                cForm
+                class="needs-validation"
+                #logForm="ngForm"
+                [formGroup]="loginForm"
+                (ngSubmit)="Login()"
+                [validated]="revision"
+              >
+                <c-input-group class="mb-1">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilUser"></svg>
+                  </span>
+                  <input 
+                    cFormControl 
+                    type="text" 
+                    placeholder="usuario" 
+                    autoComplete="usuario" 
+                    formControlName="usuario"  
+                    required  
+                  />
+                  <c-form-feedback  [valid]="false" >
+                    <ng-container *ngIf="loginForm.controls.usuario.errors as errors">
+                      <div *ngIf="errors['required']">{{formErrors.generales.obligatorio}}</div>
+                      <div *ngIf="errors['usuario']">{{formErrors.generales.formato_mail}}</div>
+                    </ng-container>
+                  </c-form-feedback>
+                </c-input-group>
+                <c-input-group class="mb-4">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilLockLocked"></svg>
+                  </span>
+                  <input 
+                    cFormControl 
+                    type="password" 
+                    placeholder="Password" 
+                    autoComplete="password" 
+                    formControlName="password" 
+                    required  
+                  />
+                  <c-form-feedback  [valid]="false" >
+                    <ng-container *ngIf="loginForm.controls.password.errors as errors">
+                      <div *ngIf="errors['required']">{{formErrors.generales.obligatorio}}</div>
+                    </ng-container>
+                  </c-form-feedback>
+                </c-input-group>
+                <c-row *ngIf="error_login" >
+                  <c-alert color="warning">{{mensaje_error}}</c-alert>
+                </c-row>
+                <c-row>
+                  <div class="d-grid gap-2">
+                    <button cButton color="light" type="submit">Login</button>
+                  </div>
+                </c-row>
+              </form>
+            </c-card-body>
+          </c-card>
+        </c-card-group>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>

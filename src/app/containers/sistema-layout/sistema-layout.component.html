@@ -1,0 +1,51 @@
+<!--sidebar-->
+<c-sidebar 
+  #sidebar="cSidebar" 
+  class="d-print-none sidebar sidebar-fixed"
+  id="sidebar"
+  visible
+>
+  <c-sidebar-brand  class="prueba2"
+    [brandFull]="{
+      src: 'assets/lotto/logo1.png',
+      width: 180,
+      height: 195,
+      alt: 'CoreUI Logo'
+    }"
+    [brandNarrow]="{
+      src: 'assets/lotto/trebol.png',
+      width: 46,
+      height: 46,
+      alt: 'CoreUI Logo'
+    }"
+    routerLink="./"
+  />
+
+  <ng-scrollbar pointerEventsMethod="scrollbar" class="prueba">
+    <c-sidebar-nav style="color: red;"
+      [navItems]="navItems "
+      dropdownMode="close"
+      class="prueba"
+
+    />
+  </ng-scrollbar>
+  <c-sidebar-toggler class="prueba"
+    *ngIf="!sidebar.narrow"
+    toggle="unfoldable"
+    cSidebarToggle="sidebar"
+  />
+</c-sidebar>
+
+<!--main-->
+<div class="wrapper d-flex flex-column min-vh-100 bg-light dark:bg-transparent" >
+  <!--app-header-->
+  <app-sistema-header class="mb-4 d-print-none header header-sticky" position="sticky" sidebarId="sidebar" />
+  <!--app-body-->
+  <div class="body flex-grow-1 px-3">
+    <c-container breakpoint="lg" class="h-auto" >
+      <router-outlet/>
+    </c-container>
+  </div>
+  <!--app footer-->
+  <app-sistema-footer/>
+</div>

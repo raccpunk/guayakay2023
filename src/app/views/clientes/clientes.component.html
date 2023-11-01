@@ -1,0 +1,426 @@
+<c-card>
+    <c-card-header>
+        <c-row class="justify-content-end">
+            <c-col lg="10">
+                Clientes
+            </c-col>
+            <c-col lg="2">
+                <button [cModalToggle]="staticBackdropModal.id" cButton>Agregar Cliente</button>
+
+            </c-col>
+        </c-row>
+    </c-card-header>
+    <c-card-body>
+        <table class="table table-striped table-hover prueba" id="datatable-clientes">
+            <thead>
+                <tr>
+                    <!-- <th>ID</th> -->
+                    <th>Nombre</th>
+                    <th>Empresa</th>
+                    <th>Razón Social</th>
+                    <!-- <th>RFC</th> -->
+                    <!-- <th>Dirección</th> -->
+                    <!-- <th>cp</th> -->
+                    <th>Telefono</th>
+                    <th>Correo</th>
+                    
+                    <!-- <th>Estado</th> -->
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let Usuarios of lista_clientes; let i = index">
+                    <!-- <td>{{Usuarios.idcliente}}</td> -->
+                    <td>{{Usuarios.nombre}}</td>
+                    <td>{{Usuarios.empresa}}</td>
+                    <td>{{Usuarios.razon_social}}</td>
+                    <!-- <td>{{Usuarios.rfc}}</td> -->
+                    <!-- <td>{{Usuarios.direccion}}</td> -->
+                    <!-- <td>{{Usuarios.codigo_postal}}</td> -->
+                    <td>{{Usuarios.telefono}}</td>
+                    <td>{{Usuarios.email}}</td>
+                   
+                    <!-- <td>{{Usuarios.estado}}</td> -->
+                    <td>
+                        <div>
+                            <div class="btn" ngbTooltip="Activar / Desactivar usuario">
+                                <div
+                                    class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    <input type="checkbox" class="custom-control-input" #inputChek
+                                        id="customSwitch{{Usuarios.idEstado}}" [checked]="true" (click)=" getArray(i);"
+                                        [cModalToggle]="staticBackdropModal3.id" *ngIf="Usuarios.activo == true"
+                                        (change)="inputChek.checked = !inputChek.checked">
+                                    <input type="checkbox" class="custom-control-input" #inputChekout
+                                        id="customSwitch{{Usuarios.idEstado}}" [checked]="false"
+                                        [cModalToggle]="staticBackdropModal4.id" (click)=" getArray(i);"
+                                        *ngIf="Usuarios.activo != true"
+                                        (change)="inputChekout.checked = !inputChekout.checked">
+                                    <label class="custom-control-label" for="customSwitch{{Usuarios.idEstado}}"></label>
+                                </div>
+                            </div>
+                    <td *ngIf="Usuarios.activo == true">Activo</td>
+                    <td *ngIf="Usuarios.activo != true">Inactivo</td>
+                    </div>
+
+
+
+                    <td>
+
+                        <a (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal2.id"
+                                cButton>Ver</button></a>
+                        &nbsp;
+                        <a (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal5.id"
+                                cButton>Editar</button></a>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </c-card-body>
+</c-card>
+
+<c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal">
+    <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
+        <c-modal-header>
+            <h5 cModalTitle>Agregar Cliente</h5>
+            <button [cModalToggle]="staticBackdropModal.id" cButtonClose></button>
+        </c-modal-header>
+
+        <c-modal-body>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="nombre" placeholder="Nombre"
+                            [ngClass]="{ 'is-invalid': submitted && f['nombre'].errors }">
+                        <div *ngIf="submitted && f['nombre'].errors" class="invalid-feedback">
+                            <div *ngIf="f['nombre'].errors['required']">name is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="razon_social" maxlength="50"
+                            placeholder="Razón Social">
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="rfc" maxlength="13" placeholder="RFC">
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="direccion" maxlength="50"
+                            placeholder="Dirección">
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="number" formControlName="codigo_postal" maxlength="5"
+                            oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                            maxlength="5" maxlength="5" placeholder="Código Postal">
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="number" formControlName="telefono" maxlength="10"
+                            placeholder="telefono"
+                            oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                            [ngClass]="{ 'is-invalid': submitted && f['telefono'].errors }">
+                        <div *ngIf="submitted && f['telefono'].errors" class="invalid-feedback">
+                            <div *ngIf="f['telefono'].errors['required']">telefono is required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="email" formControlName="email" placeholder="e-mail"
+                            [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
+                        <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                            <div *ngIf="f['email'].errors['required']">email is required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="empresa" maxlength="38"
+                            placeholder="Empresa">
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="estado" placeholder="estado"
+                            [ngClass]="{ 'is-invalid': submitted && f['estado'].errors }">
+                        <div *ngIf="submitted && f['estado'].errors" class="invalid-feedback">
+                            <div *ngIf="f['estado'].errors['required']">estado is required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p></p>
+        </c-modal-body>
+        <c-modal-footer>
+            <button [cModalToggle]="staticBackdropModal.id" cButton color="secondary">
+                Cerrar
+            </button>
+            <button cButton color="primary" type="submit">Guardar</button>
+
+        </c-modal-footer>
+    </form>
+</c-modal>
+
+<c-modal #staticBackdropModal2 backdrop="static" id="staticBackdropModal2">
+    <c-modal-header>
+        <h5 cModalTitle>Información del Usuario</h5>
+        <button [cModalToggle]="staticBackdropModal2.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        <table class="default">
+            <tr>
+                <th>ID:</th>
+                <td>{{clienteAselect[0].idcliente}}</td>
+            </tr>
+            <p></p>
+            <tr>
+                <th scope="row">Nombre: </th>
+                <td>{{clienteAselect[0].nombre}}</td>
+                <p></p>
+            </tr>
+            <p></p>
+            <tr>
+                <th>E-mail:</th>
+                <td>{{clienteAselect[0].email}}</td>
+            </tr>
+            <p></p>
+            <tr>
+                <th>Razon Social:</th>
+                <td>{{clienteAselect[0].razon_social}}</td>
+            </tr>
+            <p></p>
+            <tr>
+                <th>RFC:</th>
+                <td>{{clienteAselect[0].rfc}}</td>
+            </tr>
+            <p></p>
+            <tr>
+                <th>Dirección:</th>
+                <td>{{clienteAselect[0].direccion}}</td>
+            </tr>
+            <p></p>
+            <tr>
+                <th>codigo postal:</th>
+                <td>{{clienteAselect[0].codigo_postal}}</td>
+            </tr>
+            <p></p>
+            <tr>
+                <th>Teléfono:</th>
+                <td>{{clienteAselect[0].telefono}}</td>
+            </tr>
+            <p></p>
+            <tr>
+                <th>Empresa:</th>
+                <td>{{clienteAselect[0].empresa}}</td>
+            </tr>
+            <p></p>
+            <tr>
+                <th>Estado:</th>
+                <td>{{clienteAselect[0].estado}}</td>
+            </tr>
+            <p></p>
+            <tr>
+                <th>Estatus:</th>
+                <td *ngIf="clienteAselect[0].activo == true">Activo</td>
+                <td *ngIf="clienteAselect[0].activo != true">Inactivo</td>
+            </tr>
+        </table>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="staticBackdropModal2.id" cButton color="secondary">
+            Cerrar
+        </button>
+
+    </c-modal-footer>
+</c-modal>
+
+<c-modal #staticBackdropModal3 backdrop="static" id="staticBackdropModal3">
+    <c-modal-header>
+        <h5 cModalTitle></h5>
+        <button [cModalToggle]="staticBackdropModal3.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        <div class="icon-box">
+            <i class="material-icons">&#x58;</i>
+        </div>
+        <P style="text-align: center;">¿desa desactivar al cliente {{clienteAselect[0].nombre}}?</P>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="staticBackdropModal3.id" cButton color="secondary">
+            Cerrar
+        </button>
+        <button cButton color="primary" (click)="Desactivar()">Guardar</button>
+    </c-modal-footer>
+</c-modal>
+
+<c-modal #staticBackdropModal4 backdrop="static" id="staticBackdropModal4">
+    <c-modal-header>
+        <h5 cModalTitle></h5>
+        <button [cModalToggle]="staticBackdropModal4.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        <div class="icon-box2">
+
+            <i class="material-icons">&#10003;</i>
+        </div>
+        <P style="text-align: center;">¿desa activar al cliente {{clienteAselect[0].nombre}}?</P>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="staticBackdropModal4.id" cButton color="secondary">
+            Cerrar
+        </button>
+        <button cButton color="primary" (click)="Activar()">Guardar</button>
+    </c-modal-footer>
+</c-modal>
+
+<c-modal #staticBackdropModal5 backdrop="static" id="staticBackdropModal5">
+    <form [formGroup]="EditclientForm" (ngSubmit)="onSubmit2()">
+        <c-modal-header>
+            <h5 cModalTitle>Agregar Cliente</h5>
+            <button [cModalToggle]="staticBackdropModal5.id" cButtonClose></button>
+        </c-modal-header>
+
+        <c-modal-body>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="nombre" placeholder="Nombre"
+                            [ngClass]="{ 'is-invalid': submitted && f2['nombre'].errors }">
+                        <div *ngIf="submitted && f2['nombre'].errors" class="invalid-feedback">
+                            <div *ngIf="f2['nombre'].errors['required']">name is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="razon_social" maxlength="50"
+                            placeholder="Razón Social">
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="rfc" maxlength="13" placeholder="RFC">
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="direccion" maxlength="50"
+                            placeholder="Dirección">
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="number" formControlName="codigo_postal" maxlength="5"
+                            oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                            maxlength="5" maxlength="5" placeholder="Código Postal">
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="number" formControlName="telefono" maxlength="10"
+                            placeholder="telefono"
+                            oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                            [ngClass]="{ 'is-invalid': submitted && f2['telefono'].errors }">
+                        <div *ngIf="submitted && f2['telefono'].errors" class="invalid-feedback">
+                            <div *ngIf="f2['telefono'].errors['required']">telefono is required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="email" formControlName="email" placeholder="e-mail"
+                            [ngClass]="{ 'is-invalid': submitted && f2['email'].errors }">
+                        <div *ngIf="submitted && f2['email'].errors" class="invalid-feedback">
+                            <div *ngIf="f2['email'].errors['required']">email is required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="empresa" maxlength="38"
+                            placeholder="Empresa">
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="estado" placeholder="estado"
+                            [ngClass]="{ 'is-invalid': submitted && f2['estado'].errors }">
+                        <div *ngIf="submitted && f2['estado'].errors" class="invalid-feedback">
+                            <div *ngIf="f2['estado'].errors['required']">estado is required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p></p>
+        </c-modal-body>
+        <c-modal-footer>
+            <button [cModalToggle]="staticBackdropModal5.id" cButton color="secondary">
+                Cerrar
+            </button>
+            <button cButton color="primary" type="submit">Guardar</button>
+
+        </c-modal-footer>
+    </form>
+</c-modal>

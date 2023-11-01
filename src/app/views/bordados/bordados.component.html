@@ -1,0 +1,531 @@
+<c-card>
+    <c-card-header>
+        <c-row class="justify-content-end">
+            <c-col lg="10">
+                Bordados
+            </c-col>
+            <c-col lg="2">
+                <button [cModalToggle]="staticBackdropModal.id" cButton>Agregar Bordado</button>
+
+            </c-col>
+            <p></p>
+            <select class="form-select" [formControl]="idcliente" (change)="obtenerBordadosCliente()">
+                <option selected value="0">Selecciona un cliente</option>
+                <option *ngFor="let Cliente of lista_clientes;" value="{{Cliente.idcliente}}">{{Cliente.nombre}}
+                </option>
+            </select>
+        </c-row>
+    </c-card-header>
+    <c-card-body>
+        <table class="table table-striped table-hover responsive" id="datatable-bordados" width="100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <!-- <th>Número de puntadas</th> -->
+                    <th>Nombre</th>
+                    <th>Imagen</th>
+                    <th>Alto</th>
+                    <th>Ancho</th>
+                    <th>Detalles del diseño</th>
+                    <th>Precio</th>
+                    <th>Status</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let Bordado of lista_clienteBordado; let i = index">
+                    <td>{{Bordado.idbordado}}</td>
+                    <!-- <td>{{Bordados.numPuntadas}}</td> -->
+                    <td>{{Bordado.tblBordado.nombre}}</td>
+                    <td data-toggle="modal" data-target="#Modal"><img width="300" height="200" align="center"
+                            src="{{this.img_urlfront + Bordado.tblBordado.portada != '0' ? this.img_urlfront + Bordado.tblBordado.portada : '../../assets/imagenes/OIP.jpg'}}"
+                            class="imgmia"></td>
+                    <td>{{Bordado.tblBordado.alto}}</td>
+                    <td>{{Bordado.tblBordado.ancho}}</td>
+                    <td>{{Bordado.tblBordado.observacion}}</td>
+                    <td>0.00</td>
+                    <td>
+                        <div>
+                            <div class="btn" ngbTooltip="Activar / Desactivar usuario">
+                                <div
+                                    class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    <input type="checkbox" class="custom-control-input" #inputChek
+                                        id="customSwitch{{Bordado.tblBordado.idbordado}}" [checked]="true"
+                                        (click)=" getArray(i);" [cModalToggle]="staticBackdropModal3.id"
+                                        *ngIf="Bordado.tblBordado.activo == true"
+                                        (change)="inputChek.checked = !inputChek.checked">
+                                    <input type="checkbox" class="custom-control-input" #inputChekout
+                                        id="customSwitch{{Bordado.tblBordado.idbordado}}" [checked]="false"
+                                        [cModalToggle]="staticBackdropModal4.id" (click)=" getArray(i);"
+                                        *ngIf="Bordado.tblBordado.activo != true"
+                                        (change)="inputChekout.checked = !inputChekout.checked">
+                                    <label class="custom-control-label"
+                                        for="customSwitch{{Bordado.tblBordado.idbordado}}"></label>
+                                </div>
+                            </div>
+                    <td *ngIf="Bordado.tblBordado.activo == true">Activo</td>
+                    <td *ngIf="Bordado.tblBordado.activo != true">Inactivo</td>
+                    </div>
+                    </td>
+                    <td>
+
+                        <a (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal2.id"
+                                cButton>View</button></a>
+                        &nbsp;
+                        <a (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal5.id"
+                                cButton>Editar</button></a>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </c-card-body>
+</c-card>
+
+<c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal">
+    <form [formGroup]="BordadoFormDinamic" (ngSubmit)="onSubmit()">
+        <c-modal-header>
+            <h5 cModalTitle>Agregar Bordado</h5>
+            <button [cModalToggle]="staticBackdropModal.id" cButtonClose></button>
+        </c-modal-header>
+        <c-modal-body>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <select class="form-select" formControlName="idcliente" aria-label="Default select example">
+                            <option value="0">Selecciona un cliente</option>
+                            <option *ngFor="let Cliente of lista_clientes" value="{{Cliente.idcliente}}">
+                                {{Cliente.nombre}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" formControlName="disenio" type="text" placeholder="diseño ">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="number" formControlName="puntadas" placeholder="puntadas">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <select class="form-select" formControlName="Tecnica" aria-label="Default select example">
+                            <option value="0">Selecciona una tecnica</option>
+                            <option *ngFor="let Tecnicas of lista_tecnicas" value="{{Tecnicas.idtecnica}}">
+                                {{Tecnicas.nombre}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <select formControlName="aro" class="form-select" aria-label="Default select example">
+                            <option value="0">Selecciona un aro</option>
+                            <option *ngFor="let aro of lista_cabezales" value="{{aro.idcabezal}}">
+                                {{aro.nombre}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="number" formControlName="alto" placeholder="Alto">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="number" formControlName="ancho" placeholder="Ancho">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="observacion"
+                            placeholder="Detalles del diseño">
+                    </div>
+                </div>
+            </div>
+            <h4 class="information mt-2 text-left">Ingrese las
+                imagenes del bordado</h4>
+            <h6 class="information mt-1 text-left">puede ser una o
+                varias imagenes</h6>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input name="src-file2" (change)="onFileSelect($event, 'portada')" aria-label="Archivo"
+                            class="form-control" type="file" formControlName="portada"
+                            accept="image/png, .jpeg, .jpg, image/gif">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" (change)="onFileSelect($event, 'imagen1')" type="file"
+                            accept="image/png, .jpeg, .jpg, image/gif" formControlName="imagen1" value="">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" (change)="onFileSelect($event, 'imagen2')" type="file"
+                            accept="image/png, .jpeg, .jpg, image/gif" formControlName="imagen2" value="">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" (change)="onFileSelect($event, 'imagen3')" type="file"
+                            accept="image/png, .jpeg, .jpg, image/gif" formControlName="imagen3" value="">
+                    </div>
+                </div>
+            </div>
+
+
+            <ng-container formArrayName="patrones" *ngFor="let Patron of hilosLista.controls; index as i">
+                <h4>Secuencias</h4>
+                <c-row class="justify-content-md-center" [formGroupName]="i">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <input class="form-control" type="text" formControlName="hilo" placeholder="hilo"
+                                    [ngClass]="{ 'is-invalid': submitted && f['hilo'].errors }">
+                                <div *ngIf="submitted && f['hilo'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['hilo'].errors['required']">hilo is
+                                        required</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-12 col-md-2">
+                        <button (click)="mostrar=true" (click)="addhilos()"
+                            class="btn btn-success btn btn-outline-whrite"
+                            style="margin: 1px; border-radius: 15px; color: white;" type="button"><b>+</b></button>
+
+
+                        <button *ngIf="mostrar" (click)="remove(i)" class="btn btn-danger btn btn-outline-whrite"
+                            style="margin: 1px; border-radius: 15px;  color: white;" type="button"><b>-</b></button>
+                    </div>
+                </c-row>
+            </ng-container>
+
+        </c-modal-body>
+        <c-modal-footer>
+            <button [cModalToggle]="staticBackdropModal.id" cButton color="secondary">
+                Close
+            </button>
+            <button cButton color="primary" type="submit">Understood</button>
+
+
+        </c-modal-footer>
+    </form>
+</c-modal>
+
+<c-modal class="modal-xl" #staticBackdropModal2 backdrop="static" id="staticBackdropModal2">
+
+    <c-modal-header>
+        <h5 cModalTitle>Información del Bordado</h5>
+        <button [cModalToggle]="staticBackdropModal2.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        <div class="container text-center">
+            <div class="row align-items-start">
+                <div class="col">
+                    <tr>
+                        <th>Cliente:</th>
+                        <td>{{this.nombre}}</td>
+                    </tr>
+                    <p></p>
+                    <tr>
+                        <th>Bordado:</th>
+                        <td>{{this.nombreBordado}}</td>
+                    </tr>
+
+
+                    <p></p>
+                    <tr>
+                        <th>Número de puntadas:</th>
+                        <td>{{this.num_puntadas}}</td>
+                    </tr>
+                    <p></p>
+                    <tr>
+                        <th>Alto:</th>
+                        <td>{{this.alto}}</td>
+                    </tr>
+
+                    <p></p>
+                    <tr>
+                        <th>Ancho:</th>
+                        <td>{{this.ancho}}</td>
+                    </tr>
+               
+
+
+                <p></p>
+                <tr>
+                    <th>Tecnica:</th>
+                    <td>{{this.tecnica}}</td>
+                </tr>
+                <p></p>
+                <tr>
+                    <th>Cabezal:</th>
+                    <td>{{this.cabezal}}</td>
+                </tr>
+             
+                    <p></p>
+                    <tr>
+                        <th>Detalles del Bordado:</th>
+                        <td>{{this.observacionB}}</td>
+                    </tr>
+                    <p></p>
+                </div>
+                <div class="col">
+                    Portada
+                    <tr>
+                        
+                        <td><img width="400" height="300" align="center" src="{{this.portada}}"></td>
+                    </tr>
+                    <p></p>
+                    Imagen
+                    <tr>
+                        
+                        <td><img width="150" height="100" align="center" src="{{this.imagen1}}"></td>
+                        <td><img width="150" height="100" align="center" src="{{this.imagen2}}"></td>
+                        <td><img width="150" height="100" align="center" src="{{this.imagen3}}"></td>
+                    </tr>
+                    <p></p>
+                    <h5>
+                        <th>Patron</th>
+                    </h5>
+                    <tr *ngFor="let hilo of hilosA;">
+                        <th>hilo:</th>
+                        <td>{{hilo.orden}} - {{hilo.hilo}}</td>
+
+                    </tr>
+                    <p></p>
+                </div>
+            </div>
+        </div>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="staticBackdropModal2.id" cButton color="secondary">
+            Close
+        </button>
+
+    </c-modal-footer>
+</c-modal>
+
+<c-modal #staticBackdropModal3 backdrop="static" id="staticBackdropModal3">
+    <c-modal-header>
+        <h5 cModalTitle></h5>
+        <button [cModalToggle]="staticBackdropModal3.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        <div class="icon-box">
+            <i class="material-icons">&#x58;</i>
+        </div>
+        <P style="text-align: center;">¿desea desactivar el bordado {{BordadosU[0].nombre}}?</P>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="staticBackdropModal3.id" cButton color="secondary">
+            Close
+        </button>
+        <button cButton color="primary" (click)="Desactivar()">Understood</button>
+    </c-modal-footer>
+</c-modal>
+
+<c-modal #staticBackdropModal4 backdrop="static" id="staticBackdropModal4">
+    <c-modal-header>
+        <h5 cModalTitle></h5>
+        <button [cModalToggle]="staticBackdropModal4.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        <div class="icon-box2">
+
+            <i class="material-icons">&#10003;</i>
+        </div>
+        <P style="text-align: center;">¿desea activar el bordado {{BordadosU[0].nombre}}?</P>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="staticBackdropModal4.id" cButton color="secondary">
+            Close
+        </button>
+        <button cButton color="primary" (click)="Activar()">Understood</button>
+    </c-modal-footer>
+</c-modal>
+
+<c-modal #staticBackdropModal5 backdrop="static" id="staticBackdropModal5">
+    <form [formGroup]="editBordadoFormDinamic" (ngSubmit)="onSubmit2()">
+        <c-modal-header>
+            <h5 cModalTitle>Editar Bordado</h5>
+            <button [cModalToggle]="staticBackdropModal5.id" cButtonClose></button>
+        </c-modal-header>
+        <c-modal-body>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <select class="form-select" formControlName="idcliente" aria-label="Default select example">
+                            <option value="0">Selecciona un cliente</option>
+                            <option *ngFor="let Cliente of lista_clientes" value="{{Cliente.idcliente}}">
+                                {{Cliente.nombre}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" formControlName="disenio" type="text" placeholder="diseño ">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="number" formControlName="puntadas" placeholder="puntadas">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <select class="form-select" formControlName="Tecnica" aria-label="Default select example">
+                            <option value="0">Selecciona una tecnica</option>
+                            <option *ngFor="let Tecnicas of lista_tecnicas" value="{{Tecnicas.idtecnica}}">
+                                {{Tecnicas.nombre}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <select formControlName="aro" class="form-select" aria-label="Default select example">
+                            <option value="0">Selecciona un aro</option>
+                            <option *ngFor="let aro of lista_cabezales" value="{{aro.idcabezal}}">
+                                {{aro.nombre}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="number" formControlName="alto" placeholder="Alto">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="number" formControlName="ancho" placeholder="Ancho">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="observacion"
+                            placeholder="Detalles del diseño">
+                    </div>
+                </div>
+            </div>
+            <h4 class="information mt-2 text-left">Ingrese las
+                imagenes del bordado</h4>
+            <h6 class="information mt-1 text-left">puede ser una o
+                varias imagenes</h6>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input name="src-file2" (change)="onFileSelect($event, 'portada')" aria-label="Archivo" class="form-control" type="file"
+                            formControlName="portada" accept="image/png, .jpeg, .jpg, image/gif">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" (change)="onFileSelect($event, 'imagen1')" type="file" accept="image/png, .jpeg, .jpg, image/gif"
+                            formControlName="imagen1" value="">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" (change)="onFileSelect($event, 'imagen2')"  type="file" accept="image/png, .jpeg, .jpg, image/gif"
+                            formControlName="imagen2" value="">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" (change)="onFileSelect($event, 'imagen3')"  type="file" accept="image/png, .jpeg, .jpg, image/gif"
+                            formControlName="imagen3" value="">
+                    </div>
+                </div>
+            </div>
+
+
+            <ng-container formArrayName="patrones" *ngFor="let Patron of hilosLista2.controls; index as i">
+                <h4>Secuencias</h4>
+                <c-row class="justify-content-md-center" [formGroupName]="i">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <input class="form-control" type="text" formControlName="hilo" placeholder="hilo"
+                                    [ngClass]="{ 'is-invalid': submitted && f['hilo'].errors }">
+                                <div *ngIf="submitted && f['hilo'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['hilo'].errors['required']">hilo is
+                                        required</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-12 col-md-2">
+                        <button (click)="mostrar=true" (click)="addhilos2()"
+                            class="btn btn-success btn btn-outline-whrite"
+                            style="margin: 1px; border-radius: 15px; color: white;" type="button"><b>+</b></button>
+
+
+                        <button *ngIf="mostrar" (click)="remove2(i)" class="btn btn-danger btn btn-outline-whrite"
+                            style="margin: 1px; border-radius: 15px;  color: white;" type="button"><b>-</b></button>
+                    </div>
+                </c-row>
+            </ng-container>
+
+        </c-modal-body>
+        <c-modal-footer>
+            <button [cModalToggle]="staticBackdropModal5.id" cButton color="secondary">
+                Close
+            </button>
+            <button cButton color="primary" type="submit">Understood</button>
+
+
+        </c-modal-footer>
+    </form>
+</c-modal>

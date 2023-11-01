@@ -1,0 +1,235 @@
+<c-card>
+    <c-card-header>
+        <c-row class="justify-content-end">
+            <c-col lg="10">
+                Máquinas
+            </c-col>
+            <c-col lg="2">
+                <button [cModalToggle]="staticBackdropModal.id" cButton>Agregar Máquina</button>
+
+            </c-col>
+        </c-row>
+    </c-card-header>
+    <c-card-body>
+     
+        <table class="table table-striped table-hover" id="datatable-maquinas">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Modelo</th>
+                    <th>descripción</th>
+                    <th>Activo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let Maquinas of lista_maquinas ; let i = index">
+                    <td>{{Maquinas.idmaquina}}</td>
+                    <td>{{Maquinas.nombre}}</td>
+                    <td>{{Maquinas.descripcion}}</td>
+                    <td>
+                        <div>
+                            <div class="btn" ngbTooltip="Activar / Desactivar usuario">
+                                <div
+                                    class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    <input type="checkbox" class="custom-control-input" #inputChek
+                                        id="customSwitch{{Maquinas.idmaquina}}" [checked]="true" (click)=" getArray(i);"
+                                        [cModalToggle]="staticBackdropModal3.id" *ngIf="Maquinas.activo == true"
+                                        (change)="inputChek.checked = !inputChek.checked">
+                                    <input type="checkbox" class="custom-control-input" #inputChekout
+                                        id="customSwitch{{Maquinas.idmaquina}}" [checked]="false"
+                                        [cModalToggle]="staticBackdropModal4.id" (click)=" getArray(i);"
+                                        *ngIf="Maquinas.activo != true"
+                                        (change)="inputChekout.checked = !inputChekout.checked">
+                                    <label class="custom-control-label"
+                                        for="customSwitch{{Maquinas.idmaquina}}"></label>
+                                </div>
+                            </div>
+                    <td *ngIf="Maquinas.activo == true">Activo</td>
+                    <td *ngIf="Maquinas.activo != true">Inactivo</td>
+                    </div>
+                    </td>
+                    <td>
+                        <a (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal2.id"
+                                cButton>Ver</button></a>
+                        &nbsp;
+                        <a (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal5.id"
+                                cButton>Editar</button></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </c-card-body>
+</c-card>
+
+<c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal">
+    <form (ngSubmit)="onSubmit()" [formGroup]="MaquinasForm">
+        <c-modal-header>
+            <h5 cModalTitle>Agregar Máquina</h5>
+            <button [cModalToggle]="staticBackdropModal.id" cButtonClose  #button_close_registerM></button>
+        </c-modal-header>
+        <c-modal-body>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="nombre" placeholder="Modelo"
+                            [ngClass]="{ 'is-invalid': submitted && f['nombre'].errors }">
+                        <div *ngIf="submitted && f['nombre'].errors" class="invalid-feedback">
+                            <div *ngIf="f['nombre'].errors['required']">Modelo is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="descripcion" placeholder="descripcion"
+                            [ngClass]="{ 'is-invalid': submitted && f['descripcion'].errors }">
+                        <div *ngIf="submitted && f['descripcion'].errors" class="invalid-feedback">
+                            <div *ngIf="f['descripcion'].errors['required']">descripcion is required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p></p>
+            <p></p>
+        </c-modal-body>
+        <c-modal-footer>
+            <button [cModalToggle]="staticBackdropModal.id" cButton color="secondary">
+                Close
+            </button>
+            <button cButton color="primary" type="submit">Guardar</button>
+
+        </c-modal-footer>
+    </form>
+</c-modal>
+
+<c-modal #staticBackdropModal2 backdrop="static" id="staticBackdropModal2">
+    <c-modal-header>
+        <h5 cModalTitle>Información de la máquina</h5>
+        <button [cModalToggle]="staticBackdropModal2.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        <table class="default">
+            <tr>
+                <th>ID:</th>
+                <td>{{MaquinaU[0].idmaquina}}</td>
+            </tr>
+            <p></p>
+            <tr>
+                <th scope="row">Modelo: </th>
+                <td>{{MaquinaU[0].nombre}}</td>
+                <p></p>
+            </tr>
+            <p></p>
+            <tr>
+                <th>Descripción:</th>
+                <td>{{MaquinaU[0].descripcion}}</td>
+            </tr>
+            <p></p>
+
+            <tr>
+                <th>Estatus:</th>
+                <td *ngIf="MaquinaU[0].activo == true">Activo</td>
+                <td *ngIf="MaquinaU[0].activo != true">Inactivo</td>
+            </tr>
+        </table>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="staticBackdropModal2.id" cButton color="secondary">
+            Cerrar
+        </button>
+
+    </c-modal-footer>
+</c-modal>
+
+<c-modal #staticBackdropModal3 backdrop="static" id="staticBackdropModal3">
+    <c-modal-header>
+        <h5 cModalTitle></h5>
+        <button [cModalToggle]="staticBackdropModal3.id" cButtonClose  #button_close_modal3></button>
+    </c-modal-header>
+    <c-modal-body>
+        <div class="icon-box">
+            <i class="material-icons">&#x58;</i>
+        </div>
+        <P style="text-align: center;">¿desea desactivar la máquina {{MaquinaU[0].nombre}}?</P>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="staticBackdropModal3.id" cButton color="secondary">
+            Cerrar
+        </button>
+        <button cButton color="primary" (click)="Desactivar()">Guardar</button>
+    </c-modal-footer>
+</c-modal>
+
+<c-modal #staticBackdropModal4 backdrop="static" id="staticBackdropModal4">
+    <c-modal-header>
+        <h5 cModalTitle></h5>
+        <button [cModalToggle]="staticBackdropModal4.id" cButtonClose #button_close_modal4></button>
+    </c-modal-header>
+    <c-modal-body>
+        <div class="icon-box2">
+
+            <i class="material-icons">&#10003;</i>
+        </div>
+        <P style="text-align: center;">¿desea activar la máquina {{MaquinaU[0].nombre}}?</P>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="staticBackdropModal4.id" cButton color="secondary">
+            Cerrar
+        </button>
+        <button cButton color="primary" (click)="Activar()">Guardar</button>
+    </c-modal-footer>
+</c-modal>
+
+<c-modal #staticBackdropModal5 backdrop="static" id="staticBackdropModal5">
+    <form (ngSubmit)="onSubmit2()" [formGroup]="editMaquinaForm">
+        <c-modal-header>
+            <h5 cModalTitle>Editar Máquina</h5>
+            <button [cModalToggle]="staticBackdropModal5.id" cButtonClose></button>
+        </c-modal-header>
+        <c-modal-body>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="nombre" placeholder="Modelo"
+                            [ngClass]="{ 'is-invalid': submitted && f2['nombre'].errors }">
+                        <div *ngIf="submitted && f2['nombre'].errors" class="invalid-feedback">
+                            <div *ngIf="f2['nombre'].errors['required']">modelo is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="descripcion" placeholder="descripcion"
+                            [ngClass]="{ 'is-invalid': submitted && f2['descripcion'].errors }">
+                        <div *ngIf="submitted && f2['descripcion'].errors" class="invalid-feedback">
+                            <div *ngIf="f2['descripcion'].errors['required']">descripcion is required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p></p>
+            <p></p>
+        </c-modal-body>
+        <c-modal-footer>
+            <button [cModalToggle]="staticBackdropModal5.id" cButton color="secondary">
+                Cerrar
+            </button>
+            <button cButton color="primary" type="submit">Guardar</button>
+
+        </c-modal-footer>
+    </form>
+</c-modal>
+

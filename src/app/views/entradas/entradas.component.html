@@ -1,0 +1,88 @@
+<c-card class="mb-4">
+    <c-card-header>Entrada</c-card-header>
+    <c-card-body>
+        <form (ngSubmit)="onSubmit()" [formGroup]="EntradaFormDinamic">
+
+            <c-row class="justify-content-md-center">
+                <div class="form-group">
+                    <select formControlName="idcliente" (change)="obtenerClienteBordados()" class="form-select">
+                        <option value="0">Selecciona un cliente</option>
+                        <option *ngFor="let Cliente of lista_clientes" value="{{Cliente.idcliente}}"
+                            placeholder="cliente">
+                            {{Cliente.nombre}}</option>
+                    </select>
+                </div>
+            </c-row>
+
+            <c-row class="justify-content-md-center">
+                <h5 class="information mt-4 text-left">Pedido</h5>
+            </c-row>
+
+            <c-row class="justify-content-md-center">
+                <div formArrayName="entradas">
+                    <ng-container *ngFor="let entrada of entradaslista.controls; index as i">
+                        <c-row class="justify-content-md-center" [formGroupName]="i">
+
+                            <div class="col-sm-12 col-md-3">
+                                <select class="form-select" formControlName="idbordado" (change)="obtenerBordado(i)">
+                                    <option value="0" selected>Selecciona un Bordado</option>
+                                    <option *ngFor="let ClienteBordados of lista_clienteBordado; let indice = index"
+                                        value="{{ClienteBordados.tblBordado.idbordado}}">
+                                        {{ClienteBordados.tblBordado.nombre}}</option>
+                                </select>
+                                <c-row class="justify-content-md-center" style="text-align: center;">
+                                    <c-col lg="">
+                                        <p></p>
+                                        <img
+                                        src="{{this.lista_clienteBordado[this.EntradaFormDinamic.value.entradas[i].idbordado] != '0' ?  this.portada  : '../../assets/imagenes/OIP.jpg'}}">
+
+                                    </c-col>
+                                </c-row>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <div class="form-group">
+                                    <input class="form-control input" type="text" formControlName="prenda"
+                                        placeholder="Prenda">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-2">
+                                <div class="form-group">
+                                    <input class="form-control input" type="number" formControlName="numero"
+                                        placeholder="Número">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-2">
+                                <div class="form-group">
+                                    <input class="form-control input" type="text" formControlName="observacion"
+                                        placeholder="Observación">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-2">
+                                <button (click)="mostrar=true" (click)="addEntrada()"
+                                    class="btn btn-success btn btn-outline-whrite"
+                                    style="margin: 1px; border-radius: 15px; color: white;"
+                                    type="button"><b>+</b></button>
+
+
+                                <button *ngIf="mostrar" (click)="remove(i)"
+                                    class="btn btn-danger btn btn-outline-whrite"
+                                    style="margin: 1px; border-radius: 15px;  color: white;"
+                                    type="button"><b>-</b></button>
+                            </div>
+                        </c-row>
+                    </ng-container>
+                </div>
+            </c-row>
+            <p></p>
+            <div class="row">
+                <div class="form-group">
+                    <button cButton type="button" type="submit" class="position-relative mx-2">
+                        Agregar Entrada
+                        <c-badge color="danger" position="top-end" shape="rounded-pill">{{ entradaslista.length}}</c-badge>
+                    </button>
+                </div>
+            </div>
+            <br />
+        </form>
+    </c-card-body>
+</c-card>

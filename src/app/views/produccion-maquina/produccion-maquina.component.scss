@@ -1,0 +1,17 @@
+.resaltado { background-color: #6be5ee63; }
+.resaltado2 { background-color: #03f30344; }
+.resaltado3 { background-color: #a5a49670; }
+
+h5{
+    font-family: 'Varela Round', sans-serif;
+    font-style: italic;
+    font-size: 20px;
+}
+@media screen and (max-width: 1200px){
+    h5{
+        font-family: 'Varela Round', sans-serif;
+        font-style: italic;
+        font-size: 14px;
+    }
+
+}

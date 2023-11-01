@@ -1,0 +1,296 @@
+<c-card>
+    <c-card-header>
+        <c-row class="justify-content-end">
+            <c-col lg="10">
+                Usuarios
+            </c-col>
+            <c-col lg="2">
+                <button [cModalToggle]="staticBackdropModal.id" cButton>Agregar Usuario</button>
+
+            </c-col>
+        </c-row>
+    </c-card-header>
+    <c-card-body>
+        <table class="table table-striped table-hover prueba" id="datatable-usuarios">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>usuario</th>
+                    <th>Nombre</th>
+                    <th>Rol</th>
+                    <th>Estatus</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let Usuarios of lista_usuarios; let i = index">
+                    <td>{{Usuarios.idusuario}}</td>
+                    <td>{{Usuarios.usuario}}</td>
+                    <td>{{Usuarios.nombre}}</td>
+                    <td>{{Usuarios.rol}}</td>
+                    <td>
+                        <div>
+                            <div class="btn" ngbTooltip="Activar / Desactivar usuario">
+                                <div
+                                    class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    <input type="checkbox" class="custom-control-input" #inputChek
+                                        id="customSwitch{{Usuarios.idEstado}}" [checked]="true" (click)=" getArray(i);"
+                                        [cModalToggle]="staticBackdropModal3.id" *ngIf="Usuarios.activo == true"
+                                        (change)="inputChek.checked = !inputChek.checked">
+                                    <input type="checkbox" class="custom-control-input" #inputChekout
+                                        id="customSwitch{{Usuarios.idEstado}}" [checked]="false"
+                                        [cModalToggle]="staticBackdropModal4.id" (click)=" getArray(i);"
+                                        *ngIf="Usuarios.activo != true"
+                                        (change)="inputChekout.checked = !inputChekout.checked">
+                                    <label class="custom-control-label" for="customSwitch{{Usuarios.idEstado}}"></label>
+                                </div>
+                            </div>
+                    <td *ngIf="Usuarios.activo == true">Activo</td>
+                    <td *ngIf="Usuarios.activo != true">Inactivo</td>
+                    </div>
+                    <td>
+
+                        <a (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal2.id"
+                                cButton>Ver</button></a>
+                        &nbsp;
+                        <a (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal5.id"
+                                cButton>Editar</button></a>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </c-card-body>
+</c-card>
+
+<c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal">
+    <form (ngSubmit)="onSubmit()" [formGroup]="UserForm">
+        <c-modal-header>
+            <h5 cModalTitle>Agregar Usuario</h5>
+            <button [cModalToggle]="staticBackdropModal.id" cButtonClose></button>
+        </c-modal-header>
+        <c-modal-body>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="nombre" placeholder="Nombre"
+                            [ngClass]="{ 'is-invalid': submitted && f['nombre'].errors }">
+                        <div *ngIf="submitted && f['nombre'].errors" class="invalid-feedback">
+                            <div *ngIf="f['nombre'].errors['required']">name is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="usuario" placeholder="Usuario"
+                            [ngClass]="{ 'is-invalid': submitted && f['usuario'].errors }">
+                        <div *ngIf="submitted && f['usuario'].errors" class="invalid-feedback">
+                            <div *ngIf="f['usuario'].errors['required']">email is required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="password" formControlName="password" placeholder="Password"
+                            [ngClass]="{ 'is-invalid': submitted && f['password'].errors }">
+                        <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+                            <div *ngIf="f['password'].errors['required']">password is required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <select class="form-select" formControlName="rol">
+                            <option selected value="0" disabled>Selecciona un Rol</option>
+                            <option value="recepción">recepción
+                            </option>
+                            <option value="bordador">bordador
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </c-modal-body>
+        <c-modal-footer>
+            <button [cModalToggle]="staticBackdropModal.id" cButton color="secondary">
+                Cerrar
+            </button>
+            <button cButton color="primary" type="submit">Guardar</button>
+
+        </c-modal-footer>
+    </form>
+</c-modal>
+
+<c-modal #staticBackdropModal2 backdrop="static" id="staticBackdropModal2">
+    <c-modal-header>
+        <h5 cModalTitle>Información del Usuario</h5>
+        <button [cModalToggle]="staticBackdropModal2.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        <table class="default">
+            <tr>
+                <th>ID:</th>
+                <td>{{usuarioUnico[0].idUsuario}}</td>
+            </tr>
+            <p></p>
+            <tr>
+                <th scope="row">Usuario: </th>
+                <td>{{usuarioUnico[0].nombre}}</td>
+                <p></p>
+            </tr>
+            <p></p>
+            <tr>
+                <th>Nombre:</th>
+                <td>{{usuarioUnico[0].nombre}}</td>
+            </tr>
+            <p></p>
+            <tr>
+                <th>Permiso:</th>
+                <td>{{usuarioUnico[0].rol}}</td>
+            </tr>
+            <p></p>
+            <tr>
+                <th>Status:</th>
+                <td *ngIf="usuarioUnico[0].activo == true">Activo</td>
+                <td *ngIf="usuarioUnico[0].activo != true">Inactivo</td>
+            </tr>
+        </table>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="staticBackdropModal2.id" cButton color="secondary">
+            Cerrar
+        </button>
+
+    </c-modal-footer>
+</c-modal>
+
+<c-modal #staticBackdropModal3 backdrop="static" id="staticBackdropModal3">
+    <c-modal-header>
+        <h5 cModalTitle></h5>
+        <button [cModalToggle]="staticBackdropModal3.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        <div class="icon-box">
+            <i class="material-icons">&#x58;</i>
+        </div>
+        <P style="text-align: center;">¿Desactivar al usuario {{usuarioUnico[0].nombre}}?</P>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="staticBackdropModal3.id" cButton color="secondary">
+            Cerrar
+        </button>
+        <button cButton color="primary" (click)="Desactivar()">Guardar</button>
+    </c-modal-footer>
+</c-modal>
+
+<c-modal #staticBackdropModal4 backdrop="static" id="staticBackdropModal4">
+    <c-modal-header>
+        <h5 cModalTitle></h5>
+        <button [cModalToggle]="staticBackdropModal4.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        <div class="icon-box2">
+
+            <i class="material-icons">&#10003;</i>
+        </div>
+        <P style="text-align: center;">¿Activar al usuario {{usuarioUnico[0].nombre}}?</P>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="staticBackdropModal4.id" cButton color="secondary">
+            Cerrar
+        </button>
+        <button cButton color="primary" (click)="Activar()">Guardar</button>
+    </c-modal-footer>
+</c-modal>
+
+<c-modal #staticBackdropModal5 backdrop="static" id="staticBackdropModal5">
+    <form (ngSubmit)="onSubmit2()" [formGroup]="UserEditForm">
+        <c-modal-header>
+            <h5 cModalTitle>Editar Usuario</h5>
+            <button [cModalToggle]="staticBackdropModal5.id" cButtonClose></button>
+        </c-modal-header>
+        <c-modal-body>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="nombre" placeholder="Nombre"
+                            [ngClass]="{ 'is-invalid': submitted && f2['nombre'].errors }">
+                        <div *ngIf="submitted && f2['nombre'].errors" class="invalid-feedback">
+                            <div *ngIf="f2['nombre'].errors['required']">name is
+                                required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="usuario" placeholder="Usuario"
+                            [ngClass]="{ 'is-invalid': submitted && f2['usuario'].errors }">
+                        <div *ngIf="submitted && f2['usuario'].errors" class="invalid-feedback">
+                            <div *ngIf="f2['usuario'].errors['required']">usuario is required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+   
+            <form [formGroup]="MaquinaFormDinamic" *ngIf="this.asignarmaquina">
+
+                <div formArrayName="maquinas">
+                    <ng-container *ngFor="let entrada of maquinalista.controls; index as i">
+                        <c-row [formGroupName]="i">
+                            <p></p>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <select class="form-select" formControlName="idmaquina">
+                                        <option selected value="0">Selecciona una maquina</option>
+                                        <option *ngFor="let maquina of lista_maquinas;" value="{{maquina.idmaquina}}">
+                                            {{maquina.nombre}}
+                                        </option>
+                                    </select>
+                                    <p></p>
+                                    <button (click)="mostrar=true" (click)="addmaquina()"
+                                        class="btn btn-success btn btn-outline-whrite"
+                                        style="margin: 1px; border-radius: 15px; color: white;"
+                                        type="button"><b>+</b></button>
+
+                                    <button *ngIf="mostrar" (click)="remove(i)"
+                                        class="btn btn-danger btn btn-outline-whrite"
+                                        style="margin: 1px; border-radius: 15px;  color: white;"
+                                        type="button"><b>-</b></button>
+                                </div>
+                            </div>
+
+                        </c-row>
+                    </ng-container>
+                </div>
+
+            </form>
+
+        </c-modal-body>
+
+        <c-modal-footer>
+            <button [cModalToggle]="staticBackdropModal5.id" cButton color="secondary">
+                Cerrar
+            </button>
+            <button cButton color="primary" type="submit">Guardar</button>
+
+        </c-modal-footer>
+    </form>
+
+</c-modal>
