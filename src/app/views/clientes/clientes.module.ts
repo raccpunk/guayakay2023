@@ -21,11 +21,12 @@ import { ChartjsModule } from '@coreui/angular-chartjs';
 
 import { clientesRoutingModule } from './clientes-routing.module';
 import { ClientesComponent } from './clientes.component';
-
+import { AlertComponent } from '@coreui/angular';
 
 @NgModule({
   imports: [
     clientesRoutingModule,
+    AlertComponent,
     CardModule,
     NavModule,
     IconModule,

@@ -80,9 +80,9 @@ const routes: Routes = [
   {
     path: '',
     component: SistemaLayoutComponent,
-    data: {
-      title: 'Home'
-    },
+    // data: {
+    //   title: 'Home'
+    // },
     children: [
       {
         path: 'Clientes',
@@ -132,6 +132,36 @@ const routes: Routes = [
         canActivate: [GuardService],
         loadChildren: () =>
           import('./views/entradas/entradas.module').then((m) => m.EntradaModule)
+      },
+      {
+        path: 'Servicios',
+        canActivate: [GuardService],
+        loadChildren: () =>
+          import('./views/servicios-registro/servicios-registro.module').then((m) => m.ServicioModule)
+      },
+      {
+        path: 'Rentradas',
+        canActivate: [GuardService],
+        loadChildren: () =>
+          import('./views/rentradas/rentradas.module').then((m) => m.RentradasModule)
+      },
+      {
+        path: 'Rcobros',
+        canActivate: [GuardService],
+        loadChildren: () =>
+          import('./views/rcobros/rcobros.module').then((m) => m.RcobrosModule)
+      },
+      {
+        path: 'Rcobrospagos',
+        canActivate: [GuardService],
+        loadChildren: () =>
+          import('./views/rcobrospagos/rcobrospagos.module').then((m) => m.RcobrospagosModule)
+      },
+      {
+        path: 'Rservicios',
+        canActivate: [GuardService],
+        loadChildren: () =>
+          import('./views/rservicios/rservicios.module').then((m) => m.RserviciosModule)
       },
       {
         path: 'bordados',

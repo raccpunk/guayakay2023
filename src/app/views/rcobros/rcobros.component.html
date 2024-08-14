@@ -1,0 +1,218 @@
+<form [formGroup]="historialForm " (ngSubmit)="buscarHistorial()">
+    <div class="row ">
+        <div class="col-sm-3">
+            <a>Fecha inicial</a>
+            <input type="date" formControlName="fechainicio" id="start" name="trip-start" [value]="this.fechaActual" min="2015-01-01" [max]='this.fechaActual'/>
+        </div>
+        <div class="col-sm-3">
+            <a>Fecha final</a>
+            <input type="date" formControlName="fechafinal" id="start" name="trip-start" [value]="this.fechaActual"  [max]='this.fechaActual'/>
+        </div>
+        <div class="col-sm-4">
+            <button cButton color="primary" type="submit">BUSCAR</button>
+          
+        </div>
+     
+       
+    </div>
+</form>
+<div class="col-sm-6" *ngIf="historial_lista.length != 0">
+    <button  cButton (click)="generarExcel()" class="buttonexcel">Exportar a Excel</button>
+  
+</div>
+<p></p>
+<c-card *ngIf="variable">
+    <c-card-header>
+        <c-row class="justify-content-end">
+            <c-col lg="10">
+                HISTORIAL
+            </c-col>
+            <c-col lg="2">
+            </c-col>
+        </c-row>
+    </c-card-header>
+    <c-card-body>
+        <table class="table table-striped table-hover prueba" id="datatable-produccion">
+            <thead>
+                <tr>
+                    <th>FECHA CREACION</th>
+                    <th data-priority="1">FOLIO</th>
+                    <th>USUARIO</th>
+                    <th>CLIENTE</th>
+                    <th>MÉTODO DE COBRO</th>
+                    <th>FORMA DE PAGO</th>
+                    <th>IVA %</th>
+                    <th>$ IVA</th>
+                    <th>SUB TOTAL</th>
+                    <th>TOTAL </th>
+                    <th>PAGADO</th>
+                    <th>ESTATUS</th>
+                    <!-- <th>Precio</th>
+                    <th>nota</th>
+                    <th>Fecha de nota </th>
+                    <th>factura</th> -->
+                    <!-- <th data-priority="1">Acciones</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let historial of historial_lista; let i = index" 
+                [ngClass]="{'resaltado': historial.estatus  == 'pagado', 'resaltado6': historial.estatus == 'cancelado',}">
+                <td>{{historial.createdAt | date:'dd/MM/yy'}}</td>
+                <td><button #button_abrir_detalles(i) (click)="vercobrosselect(i); " [cModalToggle]="staticBackdropModal.id"
+                         cButton>{{historial.idcobro}} </button></td>
+                         <td *ngIf="historial.tblUsuario == null">sin asignar</td>
+                         <td  *ngIf="historial.tblUsuario != null">{{historial.tblUsuario.nombre}}</td>
+                         <td>{{historial.tblCliente.nombre}}</td>
+                        <td>{{historial.tipo_cobro}}</td>
+                        <td>{{historial.tipo_pago}}</td>
+                        <td>%{{historial.iva_porcentaje}}</td>
+                        <td>${{historial.iva_numero | number}}</td>
+                        <td>${{historial.monto_total | number}}</td>
+                        <td>${{(historial.monto_total + historial.iva_numero) | number}}</td>
+                        <td>${{historial.pagado | number}}</td>
+                        <td>{{historial.estatus}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </c-card-body>
+</c-card>
+
+<c-modal class="modal-xl" #staticBackdropModal data-backdrop="static" id="staticBackdropModal">
+    <!-- <form (ngSubmit)="onSubmit()" [formGroup]="MaquinasForm"> -->
+    <c-modal-header>
+        <h4 class="information mt-4 text-left">DETALLES DE PAGO</h4>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <!-- <th>CLIENTE: {{this.nombreC}}</th> -->
+                    <!-- <th>CLIENTE: {{clienteAselect[0].idcliente}}</th>  -->
+                    <th>FOLIO: {{this.folio}}</th>
+                    <div>
+                        <button  cButton (click)="viewPDF(this.folio)">PDF</button>
+                      
+                    </div>
+               
+                    <th>CLIENTE: {{this.cliente}}</th>
+                    <button [cModalToggle]="staticBackdropModal.id" cButtonClose></button>
+                </tr>
+            </thead>
+
+            <tr>
+                <!-- <th>FECHA: {{cobroSelect[0].createdAt | date:'dd/MM/yy'}}</th> -->
+                <th>PAGADO: ${{this.pagadon   | number }}</th>
+                <th>SALDO: $ {{this.saldof  | number}}</th>
+               
+            </tr>
+        </table>
+
+    </c-modal-header>
+    <c-modal-body>
+        <div class="row">
+            <div class="form-group">
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <header>LISTA DE PRODUCTOS/ SERVICIOS</header>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>FOLIO </th>
+                            <th>NOMBRE BORDADO/ SERVICIO </th>
+                            <th>PRENDA </th>
+                            <th>CANTIDAD </th>
+                            <th>PRECIO UNITARIO</th>
+                            <th>PRECIO TOTAL </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let listapago of cobro_productos">
+                            <td>{{listapago.identrada}}</td>
+                            <td>{{listapago.bordado}}</td>
+                            <td>{{listapago.prenda}}</td>
+                            <td>{{listapago.nuprendas}}</td>
+                            <td>${{listapago.preciou  | number}}</td>
+                            <td>${{listapago.preciotc  | number}}</td>
+
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>SUB TOTAL:</td>
+                            <td>${{this.preciot  | number}}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>IVA {{this.ivap}}%</td>
+                            <td>${{this.ivanum  | number}}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>TOTAL</td>
+                            <td>${{this.totalfinal  | number}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <header >LISTA DE PAGOS</header>
+                        <tr>
+                            <th>FECHA DE PAGO</th>
+                            <th>MONTO</th>
+                            <th>SALDO</th>
+                            <th>FACTURA</th>
+                            <th>METODO DE PAGO</th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let listapago of lista_pagos">
+                            <td>{{listapago.fecha | date:'dd/MM/yy'}}</td>
+                            <!-- <td>{{montoTotal}}</td> -->
+                            <td>${{listapago.monto  | number}}</td>
+                            <td>${{listapago.saldo  | number}}</td>
+                            <td>{{this.facturas}}</td>
+                            <td>{{this.tipo_cobros}}</td>
+
+                        </tr>
+
+                    </tbody>
+
+
+
+                </table>
+            </div>
+        </div>
+    </c-modal-body>
+    <c-modal-footer>
+        <!-- <button *ngIf="EntradaU[0].estado == 'En Pausa'" (click)="Produccion()" cButton color="primary">&#9658;
+            EN PROCESO</button>
+        <button *ngIf="EntradaU[0].estado == 'En Proceso' || this.variable3" disabled="{{this.variable3}}" (click)="pausa()" cButton color="primary">
+            &#10074; &#10074; PAUSAR</button>
+        <button *ngIf="EntradaU[0].estado == 'Espera'" (click)="Produccion()" cButton color="primary">
+            &#9658; Iniciar Producción</button>
+        <button *ngIf=" this.variable3"(click)="finalizar()" cButton color="secondary">FINALIZAR</button>
+        <button (click)="cancelar()" cButton color="danger">CANCELAR</button> -->
+
+
+    </c-modal-footer>
+    <!-- </form> -->
+</c-modal>

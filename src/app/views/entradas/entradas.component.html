@@ -1,12 +1,12 @@
 <c-card class="mb-4">
     <c-card-header>Entrada</c-card-header>
     <c-card-body>
-        <form (ngSubmit)="onSubmit()" [formGroup]="EntradaFormDinamic">
+        <form (ngSubmit)="onSubmit()" [formGroup]="EntradaFormDinamic"  >
 
             <c-row class="justify-content-md-center">
                 <div class="form-group">
                     <select formControlName="idcliente" (change)="obtenerClienteBordados()" class="form-select">
-                        <option value="0">Selecciona un cliente</option>
+                        <option value="0" disabled>SELECCIONA UN CLIENTE</option>
                         <option *ngFor="let Cliente of lista_clientes" value="{{Cliente.idcliente}}"
                             placeholder="cliente">
                             {{Cliente.nombre}}</option>
@@ -15,7 +15,7 @@
             </c-row>
 
             <c-row class="justify-content-md-center">
-                <h5 class="information mt-4 text-left">Pedido</h5>
+                <c-card-header>PEDIDO</c-card-header>
             </c-row>
 
             <c-row class="justify-content-md-center">
@@ -24,37 +24,51 @@
                         <c-row class="justify-content-md-center" [formGroupName]="i">
 
                             <div class="col-sm-12 col-md-3">
+                                <div>BORDADO</div>
                                 <select class="form-select" formControlName="idbordado" (change)="obtenerBordado(i)">
-                                    <option value="0" selected>Selecciona un Bordado</option>
+                                    <option value="0" selected disabled>SELECCIONA UN BORDADO</option>
                                     <option *ngFor="let ClienteBordados of lista_clienteBordado; let indice = index"
                                         value="{{ClienteBordados.tblBordado.idbordado}}">
                                         {{ClienteBordados.tblBordado.nombre}}</option>
                                 </select>
+                              
+                                <p></p>
                                 <c-row class="justify-content-md-center" style="text-align: center;">
-                                    <c-col lg="">
-                                        <p></p>
-                                        <img
-                                        src="{{this.lista_clienteBordado[this.EntradaFormDinamic.value.entradas[i].idbordado] != '0' ?  this.portada  : '../../assets/imagenes/OIP.jpg'}}">
+                                    <c-col  *ngIf="variable2" >
+                                      
+                                        <img *ngIf="this.prueba[i] != undefined"
+                                            src="{{this.prueba[i] != 'https://guayakay-api-prod.basotecnologias.com/static/' ? this.prueba[i]: 'assets/lotto/sinfondo.png'}}">
+                                            <img *ngIf="this.prueba[i] === undefined"
+                                            src="{{this.prueba[i] !== undefined ? this.prueba[i]: 'assets/lotto/sinfondo.png'}}">
+
 
                                     </c-col>
                                 </c-row>
+                                <p></p>
                             </div>
+
                             <div class="col-sm-12 col-md-3">
+                                <div>PRENDA</div>
                                 <div class="form-group">
                                     <input class="form-control input" type="text" formControlName="prenda"
-                                        placeholder="Prenda">
+                                        placeholder="PRENDA">
                                 </div>
                             </div>
                             <div class="col-sm-12 col-md-2">
+                                <div>NÚMERO</div>
                                 <div class="form-group">
-                                    <input class="form-control input" type="number" formControlName="numero"
-                                        placeholder="Número">
+                                    <input class="form-control input" type="number" formControlName="numero" pattern="^[0-9]+" (change)="numerodinamic()"
+                                        placeholder="NÚMERO" >
+                                    <div *ngIf="this.variable" style="color: red;">no se puede registrar una entrada menor a
+                                        1 O VACIA</div>
                                 </div>
                             </div>
+
                             <div class="col-sm-12 col-md-2">
+                                <div>OBSERVACIÓN</div>
                                 <div class="form-group">
-                                    <input class="form-control input" type="text" formControlName="observacion"
-                                        placeholder="Observación">
+                                    <textarea class="form-control input" type="text" formControlName="observacion" rows="3" 
+                                    cols="33"   placeholder="OBSERVACIÓN"></textarea>
                                 </div>
                             </div>
                             <div class="col-sm-12 col-md-2">
@@ -76,9 +90,10 @@
             <p></p>
             <div class="row">
                 <div class="form-group">
-                    <button cButton type="button" type="submit" class="position-relative mx-2">
-                        Agregar Entrada
-                        <c-badge color="danger" position="top-end" shape="rounded-pill">{{ entradaslista.length}}</c-badge>
+                    <button  cButton type="button" type="submit" class="position-relative mx-2"  >
+                        Agregar Entrada 
+                        <c-badge   color="danger" position="top-end" shape="rounded-pill">{{
+                            entradaslista.length}}</c-badge>
                     </button>
                 </div>
             </div>
@@ -86,3 +101,16 @@
         </form>
     </c-card-body>
 </c-card>
+
+
+<c-modal id="liveDemoModal" alignment="center" [visible]="visible" (visibleChange)="handleLiveDemoChange($event)">
+  <c-modal-header>
+    <h4 style="font-weight: bold;" cModalTitle>SE HA REGISTRADO LA ENTRADA EXITOSAMENTE</h4>
+  </c-modal-header>
+  <c-modal-footer>
+    <button (click)="toggleLiveDemo()" cButton color="secondary">
+      ACEPTAR
+    </button>
+  </c-modal-footer>
+</c-modal>
+

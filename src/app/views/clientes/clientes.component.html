@@ -17,16 +17,16 @@
                     <!-- <th>ID</th> -->
                     <th>Nombre</th>
                     <th>Empresa</th>
-                    <th>Razón Social</th>
+                    <!-- <th>Razón Social</th> -->
                     <!-- <th>RFC</th> -->
                     <!-- <th>Dirección</th> -->
                     <!-- <th>cp</th> -->
-                    <th>Telefono</th>
-                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <!-- <th>Correo</th> -->
                     
                     <!-- <th>Estado</th> -->
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th data-priority="2">estatus</th>
+                    <th data-priority="1">acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,12 +34,12 @@
                     <!-- <td>{{Usuarios.idcliente}}</td> -->
                     <td>{{Usuarios.nombre}}</td>
                     <td>{{Usuarios.empresa}}</td>
-                    <td>{{Usuarios.razon_social}}</td>
+                    <!-- <td>{{Usuarios.razon_social}}</td> -->
                     <!-- <td>{{Usuarios.rfc}}</td> -->
                     <!-- <td>{{Usuarios.direccion}}</td> -->
                     <!-- <td>{{Usuarios.codigo_postal}}</td> -->
                     <td>{{Usuarios.telefono}}</td>
-                    <td>{{Usuarios.email}}</td>
+                    <!-- <td>{{Usuarios.email}}</td> -->
                    
                     <!-- <td>{{Usuarios.estado}}</td> -->
                     <td>
@@ -81,22 +81,49 @@
     </c-card-body>
 </c-card>
 
-<c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal">
+<c-modal #staticBackdropModal data-backdrop="static"id="staticBackdropModal">
     <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
         <c-modal-header>
             <h5 cModalTitle>Agregar Cliente</h5>
-            <button [cModalToggle]="staticBackdropModal.id" cButtonClose></button>
+            <button [cModalToggle]="staticBackdropModal.id" #button_close_detail cButtonClose></button>
         </c-modal-header>
 
         <c-modal-body>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>NOMBRE</div>
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="nombre" placeholder="Nombre"
+                        <input class="form-control" type="text" formControlName="nombre" placeholder="NOMBRE"
                             [ngClass]="{ 'is-invalid': submitted && f['nombre'].errors }">
                         <div *ngIf="submitted && f['nombre'].errors" class="invalid-feedback">
-                            <div *ngIf="f['nombre'].errors['required']">name is
-                                required</div>
+                            <div *ngIf="f['nombre'].errors['required']">Nombre es requerido  </div>
+                        </div>
+                        <c-row *ngIf="variable">
+                            <c-alert color="warning">{{mensaje_error}}</c-alert>
+                        </c-row>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div>RAZÓN SOCIAL</div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="razon_social" maxlength="50"
+                            placeholder="RAZÓN SOCIAL ">
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div>RFC</div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="rfc"  pattern="^([A-ZÑ\x26]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1]))((-)?([A-Z\d]{3}))?$" placeholder="RFC"
+                        [ngClass]="{ 'is-invalid': submitted && f['rfc'].errors }">
+                        <div *ngIf="submitted && f['rfc'].errors" class="invalid-feedback">
+                            <!-- <div *ngIf="f['rfc'].errors['required']">RFC es requerido</div> -->
+                            <div *ngIf="f['rfc'].errors['pattern']">ingrese un RFC VALIDO</div>
                         </div>
                     </div>
                 </div>
@@ -104,49 +131,40 @@
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>DIRECCIÓN</div>
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="razon_social" maxlength="50"
-                            placeholder="Razón Social">
+                        <input class="form-control" type="text" formControlName="direccion" maxlength="300"
+                            placeholder="DIRECCIÓN">
                     </div>
                 </div>
             </div>
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>CÓDIGO POSTAL</div>
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="rfc" maxlength="13" placeholder="RFC">
-                    </div>
-                </div>
-            </div>
-            <p></p>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <input class="form-control" type="text" formControlName="direccion" maxlength="50"
-                            placeholder="Dirección">
-                    </div>
-                </div>
-            </div>
-            <p></p>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <input class="form-control" type="number" formControlName="codigo_postal" maxlength="5"
+                        <input class="form-control" type="text" formControlName="codigo_postal" pattern="^[0-9]+"
                             oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                            maxlength="5" maxlength="5" placeholder="Código Postal">
+                            maxlength="5"  placeholder="CÓDIGO POSTAL"  
+                            [ngClass]="{ 'is-invalid': submitted && f['codigo_postal'].errors }">
+                            <div *ngIf="submitted && f['codigo_postal'].errors" class="invalid-feedback">
+                                <!-- <div *ngIf="f['rfc'].errors['required']">RFC es requerido</div> -->
+                                <div *ngIf="f['codigo_postal'].errors['pattern']">este campo solo admite caracteres númericos</div>
+                            </div>
                     </div>
                 </div>
             </div>
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>TELÉFONO</div>
                     <div class="form-group">
                         <input class="form-control" type="number" formControlName="telefono" maxlength="10"
-                            placeholder="telefono"
+                            placeholder="TELÉFONO"
                             oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                             [ngClass]="{ 'is-invalid': submitted && f['telefono'].errors }">
                         <div *ngIf="submitted && f['telefono'].errors" class="invalid-feedback">
-                            <div *ngIf="f['telefono'].errors['required']">telefono is required</div>
+                            <div *ngIf="f['telefono'].errors['required']">teléfono es requerido</div>
                         </div>
                     </div>
                 </div>
@@ -154,11 +172,13 @@
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>E-MAIL</div>
                     <div class="form-group">
-                        <input class="form-control" type="email" formControlName="email" placeholder="e-mail"
+                        <input class="form-control" type="email" formControlName="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="E-MAIL"
                             [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
                         <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
-                            <div *ngIf="f['email'].errors['required']">email is required</div>
+                            <div *ngIf="f['email'].errors['required']">email es requerido</div>
+                            <div *ngIf="f['email'].errors['pattern']">ingrese un correo valido</div>
                         </div>
                     </div>
                 </div>
@@ -166,20 +186,23 @@
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>EMPRESA</div>
                     <div class="form-group">
                         <input class="form-control" type="text" formControlName="empresa" maxlength="38"
-                            placeholder="Empresa">
+                            placeholder="EMPRESA">
                     </div>
                 </div>
             </div>
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>ESTADO</div>
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="estado" placeholder="estado"
+                        <input class="form-control" type="text" formControlName="estado" pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$"  placeholder="ESTADO"
                             [ngClass]="{ 'is-invalid': submitted && f['estado'].errors }">
                         <div *ngIf="submitted && f['estado'].errors" class="invalid-feedback">
-                            <div *ngIf="f['estado'].errors['required']">estado is required</div>
+                            <div *ngIf="f['estado'].errors['required']">estado es requerido</div>
+                            <div *ngIf="f['estado'].errors['pattern']">este campo solo acepta texto</div>
                         </div>
                     </div>
                 </div>
@@ -197,9 +220,9 @@
     </form>
 </c-modal>
 
-<c-modal #staticBackdropModal2 backdrop="static" id="staticBackdropModal2">
+<c-modal #staticBackdropModal2 data-backdrop="static" id="staticBackdropModal2">
     <c-modal-header>
-        <h5 cModalTitle>Información del Usuario</h5>
+        <h5 cModalTitle>Información del Cliente</h5>
         <button [cModalToggle]="staticBackdropModal2.id" cButtonClose></button>
     </c-modal-header>
     <c-modal-body>
@@ -270,10 +293,10 @@
     </c-modal-footer>
 </c-modal>
 
-<c-modal #staticBackdropModal3 backdrop="static" id="staticBackdropModal3">
+<c-modal #staticBackdropModal3 data-backdrop="static" id="staticBackdropModal3">
     <c-modal-header>
         <h5 cModalTitle></h5>
-        <button [cModalToggle]="staticBackdropModal3.id" cButtonClose></button>
+        <button [cModalToggle]="staticBackdropModal3.id" #button_close_detail3 cButtonClose></button>
     </c-modal-header>
     <c-modal-body>
         <div class="icon-box">
@@ -289,10 +312,10 @@
     </c-modal-footer>
 </c-modal>
 
-<c-modal #staticBackdropModal4 backdrop="static" id="staticBackdropModal4">
+<c-modal #staticBackdropModal4 data-backdrop="static" id="staticBackdropModal4">
     <c-modal-header>
         <h5 cModalTitle></h5>
-        <button [cModalToggle]="staticBackdropModal4.id" cButtonClose></button>
+        <button [cModalToggle]="staticBackdropModal4.id" #button_close_detail4 cButtonClose></button>
     </c-modal-header>
     <c-modal-body>
         <div class="icon-box2">
@@ -309,22 +332,22 @@
     </c-modal-footer>
 </c-modal>
 
-<c-modal #staticBackdropModal5 backdrop="static" id="staticBackdropModal5">
+<c-modal #staticBackdropModal5 data-backdrop="static"id="staticBackdropModal5">
     <form [formGroup]="EditclientForm" (ngSubmit)="onSubmit2()">
         <c-modal-header>
-            <h5 cModalTitle>Agregar Cliente</h5>
-            <button [cModalToggle]="staticBackdropModal5.id" cButtonClose></button>
+            <h5 cModalTitle>editar Cliente</h5>
+            <button [cModalToggle]="staticBackdropModal5.id" #button_close_detail5 cButtonClose></button>
         </c-modal-header>
 
         <c-modal-body>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>NOMBRE</div>
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="nombre" placeholder="Nombre"
+                        <input class="form-control" type="text" formControlName="nombre" placeholder="NOMBRE"
                             [ngClass]="{ 'is-invalid': submitted && f2['nombre'].errors }">
                         <div *ngIf="submitted && f2['nombre'].errors" class="invalid-feedback">
-                            <div *ngIf="f2['nombre'].errors['required']">name is
-                                required</div>
+                            <div *ngIf="f2['nombre'].errors['required']">NOMBRE es requerido</div>
                         </div>
                     </div>
                 </div>
@@ -332,49 +355,62 @@
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>RAZÓN SOCIAL</div>
                     <div class="form-group">
                         <input class="form-control" type="text" formControlName="razon_social" maxlength="50"
-                            placeholder="Razón Social">
+                            placeholder="RAZÓN SOCIAL">
                     </div>
                 </div>
             </div>
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>RFC</div>
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="rfc" maxlength="13" placeholder="RFC">
+                        <input class="form-control" type="text" formControlName="rfc"   pattern="^([A-ZÑ\x26]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1]))((-)?([A-Z\d]{3}))?$"  placeholder="RFC"
+                        [ngClass]="{ 'is-invalid': submitted && f2['rfc'].errors }">
+                        <div *ngIf="submitted && f2['rfc'].errors" class="invalid-feedback">
+                            <!-- <div *ngIf="f['rfc'].errors['required']">RFC es requerido</div> -->
+                            <div *ngIf="f2['rfc'].errors['pattern']">ingrese un RFC VALIDO</div>
+                        </div>
                     </div>
                 </div>
             </div>
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>DIRECCIÓN</div>
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="direccion" maxlength="50"
-                            placeholder="Dirección">
+                        <input class="form-control" type="text" formControlName="direccion" maxlength="300"
+                            placeholder="DIRECCIÓN">
                     </div>
                 </div>
             </div>
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>CÓDIGO POSTAL</div>
                     <div class="form-group">
                         <input class="form-control" type="number" formControlName="codigo_postal" maxlength="5"
                             oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                            maxlength="5" maxlength="5" placeholder="Código Postal">
+                            maxlength="5" maxlength="5" placeholder="CÓDIGO POSTAL">
+                            <div *ngIf="submitted && f2['codigo_postal'].errors" class="invalid-feedback">
+                                <div *ngIf="f2['codigo_postal'].errors['required']">teléfono es requerido</div>
+                            </div>
                     </div>
                 </div>
             </div>
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>TELÉFONO</div>
                     <div class="form-group">
                         <input class="form-control" type="number" formControlName="telefono" maxlength="10"
-                            placeholder="telefono"
+                            placeholder="TELÉFONO"
                             oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                             [ngClass]="{ 'is-invalid': submitted && f2['telefono'].errors }">
                         <div *ngIf="submitted && f2['telefono'].errors" class="invalid-feedback">
-                            <div *ngIf="f2['telefono'].errors['required']">telefono is required</div>
+                            <div *ngIf="f2['telefono'].errors['required']">teléfono es requerido</div>
                         </div>
                     </div>
                 </div>
@@ -382,11 +418,13 @@
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>E-MAIL</div>
                     <div class="form-group">
-                        <input class="form-control" type="email" formControlName="email" placeholder="e-mail"
+                        <input class="form-control" type="email" formControlName="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="E-MAIL"
                             [ngClass]="{ 'is-invalid': submitted && f2['email'].errors }">
                         <div *ngIf="submitted && f2['email'].errors" class="invalid-feedback">
-                            <div *ngIf="f2['email'].errors['required']">email is required</div>
+                            <div *ngIf="f2['email'].errors['required']">email es requerido</div>
+                            <div *ngIf="f2['email'].errors['pattern']">ingrese un correo valido</div>
                         </div>
                     </div>
                 </div>
@@ -394,20 +432,23 @@
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>EMPRESA</div>
                     <div class="form-group">
                         <input class="form-control" type="text" formControlName="empresa" maxlength="38"
-                            placeholder="Empresa">
+                            placeholder="EMPRESA">
                     </div>
                 </div>
             </div>
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>ESTADO</div>
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="estado" placeholder="estado"
+                        <input class="form-control" type="text" formControlName="estado" placeholder="ESTADO"  pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$" maxlength="300"
                             [ngClass]="{ 'is-invalid': submitted && f2['estado'].errors }">
                         <div *ngIf="submitted && f2['estado'].errors" class="invalid-feedback">
-                            <div *ngIf="f2['estado'].errors['required']">estado is required</div>
+                            <div *ngIf="f2['estado'].errors['required']">estado es requerido</div>
+                            <div *ngIf="f2['estado'].errors['pattern']">este campo solo acepta texto</div>
                         </div>
                     </div>
                 </div>

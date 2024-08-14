@@ -51,11 +51,11 @@ export class LoginComponent {
           this.iduser = success.data.usuario.idusuario
           localStorage.setItem("permiso", this.rol);
           this.rol = (localStorage.getItem('permiso') || '{0}');
-          console.log(localStorage.getItem('permiso') )
+          // console.log(localStorage.getItem('permiso') )
     
           localStorage.setItem("iduser", this.iduser);
           this.iduser = (localStorage.getItem('iduser') || '{0}');
-          console.log(localStorage.getItem('iduser') )
+          // console.log(localStorage.getItem('iduser') )
           let seguridad: any = {
             token: success.data.token
           };
@@ -67,25 +67,35 @@ export class LoginComponent {
             this.router.navigate( ['/produccionmaquina'], { relativeTo: this.route } );
             // console.log( )
           }
+          if( localStorage.getItem('permiso') == 'ventas' ){ //keys.length == 0
+            this.router.navigate( ['/Servicios'], { relativeTo: this.route } );
+            // console.log( )
+          }
           if( localStorage.getItem('permiso') == 'administrador' ){ //keys.length == 0
             this.router.navigate( ['/produccion'], { relativeTo: this.route } );
           }
           if( localStorage.getItem('permiso') == 'recepción' ){ //keys.length == 0
-            this.router.navigate( ['/produccionmaquina'], { relativeTo: this.route } );
+            this.router.navigate( ['/produccion'], { relativeTo: this.route } );
+          }
+          if( localStorage.getItem('permiso') == 'encargado_producción' ){ //keys.length == 0
+            this.router.navigate( ['/produccion'], { relativeTo: this.route } );
+          }
+          if( localStorage.getItem('permiso') == 'finanzas' ){ //keys.length == 0
+            this.router.navigate( ['/cobros'], { relativeTo: this.route } );
           }
         }, 
         error => {
           this.error_login = true;
-          console.log(error);
+          // console.log(error);
           switch (error.status){
-            case 400:
-              this.mensaje_error = 'error en Email';
+            case 404:
+              this.mensaje_error = 'EL USUARIO NO EXISTE';
               break;
             case 403:
-              this.mensaje_error = 'error en password';
+              this.mensaje_error = 'CONTRASEÑA INCORRECTA';
               break;
             default:
-              this.mensaje_error = 'error en servidor intente mas tarde';
+              this.mensaje_error = 'USUARIO Y/O CONTRASEÑA INCORRECTOS';
           }
         }
       );

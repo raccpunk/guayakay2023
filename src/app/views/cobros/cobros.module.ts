@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AutoFocusModule } from 'primeng/autofocus';
 
 import {
   AvatarModule,
+  AlertModule,
   ButtonGroupModule,
   ButtonModule,
   CardModule,
@@ -25,6 +27,8 @@ import { CobrosComponent } from './cobros.component';
 
 @NgModule({
   imports: [
+
+    AutoFocusModule,
     cobroRoutingModule,
     CardModule,
     NavModule,

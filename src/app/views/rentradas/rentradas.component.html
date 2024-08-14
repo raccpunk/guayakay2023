@@ -1,0 +1,468 @@
+<!-- <label for="start">Start date:</label> -->
+<form [formGroup]="historialForm " (ngSubmit)="buscarHistorial()">
+    <div class="row ">
+        <div class="col-sm-3">
+            <a>Fecha inicial</a>
+            <input type="date" formControlName="fechainicio" id="start" name="trip-start" value="2024-01-01"
+                min="2015-01-01" [max]='this.fechaActual' />
+        </div>
+        <div class="col-sm-3">
+            <a>Fecha final</a>
+            <input type="date" formControlName="fechafinal" id="start" name="trip-start" [value]="this.fechaActual"
+                [max]='this.fechaActual' />
+        </div>
+        <div class="col-sm-4">
+            <button cButton color="primary" type="submit">BUSCAR</button>
+
+        </div>
+
+
+    </div>
+</form>
+<div class="col-sm-6" *ngIf="historial_lista.length != 0">
+    <button cButton (click)="generarExcel()" class="buttonexcel">Exportar a Excel</button>
+
+</div>
+<p></p>
+<c-card *ngIf="variable">
+    <c-card-header>
+        <c-row class="justify-content-end">
+            <c-col lg="10">
+                HISTORIAL
+            </c-col>
+            <c-col lg="2">
+            </c-col>
+        </c-row>
+    </c-card-header>
+    <c-card-body>
+        <table class="table table-striped table-hover prueba" id="datatable-produccion">
+            <thead>
+                <tr>
+                    <th data-priority="1">ENTRADA</th>
+                    <th *ngIf="this.permiso == 'administrador'">MODIFICAR</th>
+                    <th>USUARIO REGISTRO</th>
+                    <th>USUARIO FINALIZO</th>
+                    <th>ESTATUS</th>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Diseño</th>
+                    <th>N°puntadas </th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>nota</th>
+                    <th>Fecha de nota </th>
+                    <th>factura</th>
+                    <!-- <th data-priority="1">Acciones</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let historial of historial_lista; let i = index"
+                    [ngClass]="{'resaltado6': historial.estado == 'Cancelada','resaltado4': historial.estado == 'Terminada', 'resaltado': historial.estado == 'En Pausa', 'resaltado5': historial.estado == 'Asignada a Cobro', 'resaltado2': historial.estado == 'En Proceso','resaltado3': historial.estado == 'Espera'}">
+                    <td><button (click)="getArray(i)" #button_abrir_detalles(i) [cModalToggle]="staticBackdropModal.id"
+                            cButton>{{historial.identrada}} </button></td>
+
+                    <td
+                        *ngIf=" historial.estado == 'Espera' && this.permiso == 'administrador' || historial.estado == 'En Pausa' && this.permiso == 'administrador'">
+                        <button (click)=" obtenerClienteBordados(i)" [cModalToggle]="staticBackdropModal2.id" class="buttonmodificar"
+                            cButton>MODIFICAR</button>
+                    </td>
+                    <td *ngIf=" historial.estado == 'Terminada' && this.permiso == 'administrador' ">
+                        <button [cModalToggle]="staticBackdropModal6.id" (click)="cancelar1(i)" class="button"
+                            cButton>CANCELAR</button>
+                    </td>
+                    <td
+                        *ngIf=" historial.estado == 'Cancelada' && this.permiso == 'administrador' || historial.estado == 'Asignada a Cobro' && this.permiso == 'administrador' || historial.estado == 'En Proceso' && this.permiso == 'administrador'">
+
+                    </td>
+
+                    <td>{{historial.tblUsuario.nombre}}</td>
+
+
+                    <td *ngIf="historial.tblTrabajos_Realizados.length == 0">{{historial.tblUsuario.nombre}}</td>
+                    <td *ngIf="historial.tblTrabajos_Realizados.length > 0">
+                        {{historial.tblTrabajos_Realizados[0].tblUsuario.nombre}}</td>
+                    <td>{{historial.estado}}</td>
+                    <td>{{historial.createdAt | date:'dd/MM/yy'}}</td>
+                    <td>{{historial.tblCliente.nombre}}</td>
+                    <td>{{historial.tblBordado.nombre}}</td>
+                    <td>{{historial.tblBordado.num_puntadas}}</td>
+                    <td>{{historial.realizadas}}</td>
+                    <td *ngIf="historial.tblCobro_Entradas.length == 0">sin asignar</td>
+                    <td *ngIf="historial.tblCobro_Entradas.length != 0">${{historial.tblCobro_Entradas[0].precio_unit}}
+                    </td>
+
+                    <td *ngIf="historial.tblCobro_Entradas.length == 0">sin asignar</td>
+                    <td *ngIf="historial.tblCobro_Entradas.length != 0">{{historial.tblCobro_Entradas[0].idcobro}}</td>
+
+                    <td *ngIf="historial.tblCobro_Entradas.length == 0">sin asignar</td>
+                    <td *ngIf="historial.tblCobro_Entradas.length != 0">
+                        {{historial.tblCobro_Entradas[0].tblCobro.createdAt | date:'dd/MM/yy'}}</td>
+
+                    <td *ngIf="historial.tblCobro_Entradas.length == 0">sin asignar</td>
+                    <td *ngIf="historial.tblCobro_Entradas.length != 0">
+                        {{historial.tblCobro_Entradas[0].tblCobro.factura}}</td>
+                    <!-- <td>{{historial.estado}}</td> -->
+
+                    <!-- <td>
+
+                        <a (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal2.id"
+                                cButton>VER</button></a>
+                        &nbsp;
+                        <a  (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal5.id"
+                                cButton>EDITAR</button></a>
+
+                    </td> -->
+                </tr>
+            </tbody>
+        </table>
+
+    </c-card-body>
+</c-card>
+
+<c-modal class="modal-xl" #modal1 #staticBackdropModal data-backdrop="static" id="staticBackdropModal">
+    <!-- <form (ngSubmit)="onSubmit()" [formGroup]="MaquinasForm"> -->
+    <c-modal-header>
+        <img class="img" src="assets/lotto/LOGOCOMPAQ.png">
+        <h4 style="font-weight: bold;" cModalTitle>PRODUCCIÓN</h4>
+
+        <button [cModalToggle]="staticBackdropModal.id" cButtonClose #button_close_detalles></button>
+    </c-modal-header>
+    <c-modal-body style="background-color: black;">
+
+
+        <c-row>
+            <div class="col-md-4">
+                <h5 style="color: white; font-weight: bold;">{{this.nombre}} </h5>
+            </div>
+            <div class="col-md-4">
+                <th>
+                    <h5 style=" font-weight: bold; color: white;">N. PUNTADAS:
+                    </h5>
+                <th>
+                    <h6 style="color: white;">{{this.puntadas}}</h6>
+            </div>
+            <div class="col-md-4">
+                <th>
+                    <h5 style=" font-weight: bold; color: white;">FOLIO:
+                    </h5>
+                <th>
+                    <h6 style="color: white; ">{{this.identrada}}</h6>
+            </div>
+        </c-row>
+
+        <div class="col"></div>
+        <h5 style="color: white;  text-transform: uppercase; font-weight: bold;">{{this.estado}}
+        </h5>
+
+    </c-modal-body>
+    <c-modal-body>
+        <div class="container text-center">
+            <div class="row align-items-start">
+                <div class="col">
+                    <!-- <div *ngIf="this.permiso == 'administrador' || this.permiso == 'encargado_producción'">
+                        <div *ngIf="this.errormensaje" style="color: red;">{{mensaje_error}}</div>
+                        <h5 style=" font-weight: bold;">ASIGNAR MÁQUINA:</h5>
+                        <select class="form-select" [formControl]="idmaquina" (change)="AsignarMaquina()">
+                            <option selected value="0" disabled>SELECCIONE UNA MÁQUINA</option>
+                            <option *ngFor="let maquina of lista_maquinas;" value="{{maquina.idmaquina}}">
+                                {{maquina.nombre}}
+                            </option>
+                        </select>
+                        <div *ngIf="this.alerta" style="color: red;">No se puede realizar la producción por que no esta
+                            asignada ninguna maquina</div>
+                        <div *ngIf="this.variable2" style="color: red;">No se puede asignar a otra maquina ya fue
+                            asiganada
+                            y se encuentra en producción</div>
+              
+
+                        <p></p>
+                    </div> -->
+                    <tr>
+                        <th>
+                            <h5 style=" font-weight: bold;">NOMBRE BORDADO:</h5>
+                        </th>
+                        <td>
+                            <h6>{{this.nombreBordado}}</h6>
+                        </td>
+
+
+
+                    </tr>
+                    <p></p>
+                    <h5>
+                        <th>
+                            <h5 style=" font-weight: bold;">SECUENCIA:</h5>
+                        </th>
+                    </h5>
+                    <tr style="text-align: left !important;" *ngFor="let hilo of hilosA;">
+
+                        <td>{{hilo.orden}} - {{hilo.hilo}}</td>
+
+                    </tr>
+                    <p></p>
+                    <tr>
+                        <th>
+                            <h5 style=" font-weight: bold;">ALTO:</h5>
+                        </th>
+                        <td>
+                            <h6>{{this.alto}}</h6>
+                        </td>
+
+                        <th>
+                            <h5 style=" font-weight: bold;"> ANCHO:</h5>
+                        </th>
+                        <td>
+                            <h6>{{this.ancho}}</h6>
+                        </td>
+                    </tr>
+
+                    <p></p>
+                    <tr>
+                        <th>
+                            <h5 style=" font-weight: bold;">ARO:</h5>
+                        </th>
+                        <td>
+                            <h5>{{this.cabezal}}</h5>
+                        </td>
+                    </tr>
+                    <p></p>
+                    <tr>
+                        <th>
+                            <h5 style=" font-weight: bold;">PRENDA:</h5>
+                        </th>
+                        <td>
+                            <h6>{{this.prenda}}</h6>
+                        </td>
+                    </tr>
+
+                    <p></p>
+                    <tr>
+                        <th>
+                            <h5 style=" font-weight: bold;">TOTAL PIEZAS:</h5>
+                        </th>
+                        <td>
+                            <h6>{{this.numero}}</h6>
+                        </td>
+                    </tr>
+                    <p></p>
+                    <tr>
+                        <th>
+                            <h5 style=" font-weight: bold;">PIEZAS REALIZADAS:</h5>
+                        </th>
+                        <td>
+                            <h6>{{this.realizadas}}</h6>
+                        </td>
+                    </tr>
+                    <p></p>
+                    <tr>
+                        <th>
+                            <h5 style=" font-weight: bold;">PIEZAS FALTANTES:</h5>
+                        </th>
+                        <td>
+                            <h6>{{this.faltantes}} </h6>
+                        </td>
+                    </tr>
+                    <p></p>
+                    <tr>
+                        <th>
+                            <h5 style=" font-weight: bold;">TIEMPO POR PIEZA:</h5>
+                        </th>
+                        <td>
+                            <h6>{{this.minutos1}} min</h6>
+                        </td>
+                    </tr>
+                    <p></p>
+                    <tr>
+                        <th>
+                            <!-- <h5 style=" font-weight: bold;">Tiempo Promedio de Producción:</h5>
+
+
+                            <h6>{{this.horas}} horas {{this.minutos}} min {{this.resto}} seg</h6>
+
+
+
+                            <p></p> -->
+                    <tr>
+                        <th>
+                            <h5 style=" font-weight: bold;">OBSERVACIONES:</h5>
+                        </th>
+                        <td>
+                            <h6>{{this.observacion}}</h6>
+                        </td>
+                    </tr>
+
+                    <p></p>
+                    <tr>
+                        <th>
+                            <h5 style=" font-weight: bold;">DETALLES DEL BORDADO:</h5>
+                        </th>
+                        <td>
+                            <h6>{{this.observacionB}}</h6>
+                        </td>
+
+
+                    </tr>
+
+
+                </div>
+                <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
+
+                <!-- <div class="col"> -->
+
+                <p></p>
+
+
+
+                <p></p>
+
+            </div>
+        </div>
+        <!-- </div> -->
+
+    </c-modal-body>
+    <c-modal-footer>
+
+
+
+
+    </c-modal-footer>
+    <!-- </form> -->
+</c-modal>
+
+<c-modal class="modal-xl modal2" #staticBackdropModal2 data-backdrop="static" id="staticBackdropModal2">
+    <!-- <form (ngSubmit)="onSubmit()" [formGroup]="MaquinasForm"> -->
+    <c-modal-header>
+        <img class="img" src="assets/lotto/LOGOCOMPAQ.png">
+        <h4 style="font-weight: bold;" cModalTitle>EDITAR PRODUCCIÓN</h4>
+
+        <button [cModalToggle]="staticBackdropModal2.id" cButtonClose #button_close_modal></button>
+    </c-modal-header>
+    <c-modal-body>
+
+
+        <form (ngSubmit)="onSubmit()" [formGroup]="EntradaForm">
+
+
+
+            <c-row class="justify-content-md-center">
+
+            </c-row>
+
+            <c-row class="justify-content-md-center">
+                <div>
+                    <ng-container>
+                        <c-row class="justify-content-md-center">
+                            <div>CLIENTE</div>
+                            <div class="form-group">
+                                <select formControlName="idcliente" (change)="obtenerClienteBordadosadd()"
+                                    class="form-select">
+                                    <option value="0" disabled>SELECCIONA UN CLIENTE</option>
+                                    <option *ngFor="let Cliente of lista_clientes" value="{{Cliente.idcliente}}"
+                                        placeholder="cliente">
+                                        {{Cliente.nombre}}</option>
+                                </select>
+                            </div>
+                        </c-row>
+                        <c-row class="justify-content-md-center">
+
+                            <div class="col-sm-12 col-md-3">
+                                <div>BORDADO</div>
+                                <select class="form-select" formControlName="idbordado">
+                                    <option value="0" selected disabled>SELECCIONA UN BORDADO</option>
+                                    <option *ngFor="let ClienteBordados of lista_clienteBordado; let indice = index"
+                                        value="{{ClienteBordados.tblBordado.idbordado}}">
+                                        {{ClienteBordados.tblBordado.nombre}}</option>
+                                </select>
+
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div>PRENDA</div>
+                                        <div class="form-group">
+                                            <input class="form-control" type="text" formControlName="prenda"
+                                                placeholder="PRENDA"
+                                                [ngClass]="{ 'is-invalid': submitted && f['prenda'].errors }">
+                                            <div *ngIf="submitted && f['prenda'].errors" class="invalid-feedback">
+                                                <div *ngIf="f['prenda'].errors['required']">PRENDA es requerido</div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div>NÚMERO</div>
+                                        <div class="form-group">
+                                            <input class="form-control" type="number" formControlName="numero"
+                                                placeholder="NÚMERO" min="1" pattern="^[0-9]+"
+                                                [ngClass]="{ 'is-invalid': submitted && f['numero'].errors }">
+                                            <div *ngIf="submitted && f['numero'].errors" class="invalid-feedback">
+                                                <div *ngIf="f['numero'].errors['required']">Número es requerido </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div>OBSERVACIÓN</div>
+                                        <div class="form-group">
+                                            <textarea class="form-control" type="text" formControlName="observacion"
+                                                placeholder="observación" rows="3"
+                                                [ngClass]="{ 'is-invalid': submitted && f['observacion'].errors }">
+                                            <div *ngIf="submitted && f['observacion'].errors" class="invalid-feedback">
+                                                <div *ngIf="f['observacion'].errors['required']">observacion es requerido </div>
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </c-row>
+                    </ng-container>
+                </div>
+            </c-row>
+            <h5 *ngIf="advertencia" style="color: red;">La cantidad es menor que la cantidad realizada por favor
+                introduzca un número menor al de piezas realizadas</h5>
+            <p></p>
+            <div class="row">
+                <div class="form-group">
+                    <button cButton type="button" type="submit" class="position-relative mx-2" disabled="{{variable3}}">
+                        Guardar Entrada
+                        <c-badge color="danger" position="top-end" shape="rounded-pill">
+                        </c-badge>
+                    </button>
+
+                </div>
+            </div>
+            <br />
+        </form>
+
+    </c-modal-body>
+    <c-modal-footer>
+
+
+    </c-modal-footer>
+    <!-- </form> -->
+</c-modal>
+
+<c-modal alignment="center" backdrop="static" #staticBackdropModal6 id="staticBackdropModal6">
+
+    <c-modal-header>
+        <h4 style="font-weight: bold;" cModalTitle>¿Está seguro de que desea cancelar? Una vez realizado esto, no se
+            podrán realizar cambios.</h4>
+    </c-modal-header>
+
+    <c-modal-footer>
+        <button cButton [cModalToggle]="staticBackdropModal6.id" color="secondary">Cerrar</button>
+        <button cButton [cModalToggle]="staticBackdropModal6.id" color="secondary" (click)="cancelar()">Aceptar</button>
+    </c-modal-footer>
+
+</c-modal>

@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import { NgxImageZoomModule } from 'ngx-image-zoom';
+import { NgxGalleryModule } from '@kolkov/ngx-gallery'
 import {
   AvatarModule,
   ButtonGroupModule,
@@ -25,7 +26,9 @@ import { ProduccionMaquinaComponent } from './produccion-maquina.component';
 
 @NgModule({
   imports: [
+    NgxGalleryModule,
     ProduccionMaquinaRoutingModule,
+    NgxImageZoomModule,
     CardModule,
     NavModule,
     IconModule,

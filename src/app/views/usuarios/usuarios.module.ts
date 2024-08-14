@@ -23,10 +23,12 @@ import { UsuariosRoutingModule } from './usuarios-routing.module';
 import { UsuariosComponent } from './usuarios.component';
 
 import { WidgetsModule } from '../widgets/widgets.module';
+import { AlertComponent } from '@coreui/angular';
 
 @NgModule({
   imports: [
     UsuariosRoutingModule,
+    AlertComponent,
     CardModule,
     NavModule,
     IconModule,

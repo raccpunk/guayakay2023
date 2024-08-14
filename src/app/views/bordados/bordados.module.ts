@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import { NgxImageZoomModule } from 'ngx-image-zoom';
+import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import {
   AvatarModule,
+ 
   ButtonGroupModule,
   ButtonModule,
   CardModule,
@@ -21,11 +23,14 @@ import { ChartjsModule } from '@coreui/angular-chartjs';
 
 import { bordadosRoutingModule } from './bordados-routing.module';
 import { BordadosComponent } from './bordados.component';
-
+import { AlertComponent } from '@coreui/angular';
 
 @NgModule({
   imports: [
+    NgxGalleryModule,
+    NgxImageZoomModule,
     bordadosRoutingModule,
+    AlertComponent,
     CardModule,
     NavModule,
     IconModule,

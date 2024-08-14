@@ -18,8 +18,13 @@ import { SistemaFooterComponent, SistemaHeaderComponent, SistemaLayoutComponent 
 
 // Imports agregados
 import { HttpClientModule } from '@angular/common/http';
+import { NgxImageZoomModule } from 'ngx-image-zoom';
+
+
+
 
 import {
+  
   AvatarModule,
   BadgeModule,
   BreadcrumbModule,
@@ -41,7 +46,13 @@ import {
 } from '@coreui/angular';
 
 import { IconModule, IconSetService } from '@coreui/icons-angular';
-import { TicketsStateComponent } from './views/tickets-state/tickets-state.component';
+
+import { RCobrosComponent } from './views/rcobros/rcobros.component';
+
+import { ServiciosRegistroComponent } from './views/servicios-registro/servicios-registro.component';
+
+
+
 
 
 
@@ -62,8 +73,11 @@ const SISTEMA_CONTAINERS = [
 ];
 
 @NgModule({
-  declarations: [AppComponent, ...APP_CONTAINERS, ...SISTEMA_CONTAINERS, TicketsStateComponent, ], //TicketSaleComponent
+  declarations: [AppComponent, ...APP_CONTAINERS, ...SISTEMA_CONTAINERS ], //TicketSaleComponent
   imports: [
+
+    NgxImageZoomModule,
+
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,

@@ -8,7 +8,7 @@ const routes: Routes = [
     path: '',
     component: MaquinaComponent,
     data: {
-      title: $localize`Maquinas`
+      title: $localize`MÁQUINAS`
     }
   }
 ];

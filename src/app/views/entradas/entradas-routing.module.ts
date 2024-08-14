@@ -8,7 +8,7 @@ const routes: Routes = [
     path: '',
     component: EntradasComponent,
     data: {
-      title: $localize`Entradas`
+      title: $localize`ENTRADAS`
     }
   }
 ];

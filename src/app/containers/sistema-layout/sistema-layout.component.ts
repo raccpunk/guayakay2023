@@ -13,57 +13,156 @@ export class SistemaLayoutComponent {
 
   ngOnInit() {
     this.nombreU = (localStorage.getItem('permiso') || '{0}');
-    console.log("prueba")
-    console.log(localStorage.getItem('permiso'));
+    // console.log("prueba")
+    // console.log(localStorage.getItem('permiso'));
 
     if (localStorage.getItem('permiso') == 'administrador') {
-      // console.log('true')
       this.ocultar = false;
-      console.log(false)
-
+      
       this.prueba = [
         {
           name: 'Producción',
           url: '/produccion',
-          iconComponent: { name: 'cil-chart' }
-          /*badge: {
-            color: 'success',
-            text: 'NEW'
-          }*/
+          iconComponent: { name: 'cil-speedometer' },
+      
         },
-
         {
-          name: 'Cobros',
-          url: '/cobros',
-          iconComponent: { name: 'cil-dollar' },
-
+          name: 'Entradas',
+          url: '/entradas',
+          iconComponent: { name: 'cil-clipboard' }
+        },
+        {
+          name: 'Servicios',
+          url: '/Servicios',
+          iconComponent: { name: 'cil-tags' }
         },
         {
           name: 'Clientes',
           url: '/Clientes',
-          iconComponent: { name: 'cil-user' }
-        },
-        {
-          name: 'Maquinas',
-          url: '/maquinas',
-          iconComponent: { name: 'cil-calculator' }
-        },
-
-        {
-          name: 'Entradas',
-          url: '/entradas',
-          iconComponent: { name: 'cil-diamond' }
+          iconComponent: { name: 'cil-people' }
         },
         {
           name: 'Bordados',
           url: '/bordados',
-          iconComponent: { name: 'cil-star' }
+          iconComponent: { name: 'cil-color-border' }
+        },
+        {
+          name: 'Cobros',
+          url: '/cobros',
+          iconComponent: { name: 'cil-dollar' }
+        },
+        {
+          name: 'reportes', // Nombre del menú desplegable
+          iconComponent: { name: 'cil-folder-open' },
+          children: [ // Elementos hijos del menú desplegable
+            {
+              name: 'Entradas',
+              url: '/Rentradas',
+              iconComponent: { name: 'cil-chart' }
+            },
+            {
+              name: 'Servicios',
+              url: '/Rservicios',
+              iconComponent: { name: 'cil-chart' }
+            },
+            {
+              name: 'notas',
+              url: '/Rcobros',
+              iconComponent: { name: 'cil-chart' }
+            },
+            {
+              name: 'notas pagos',
+              url: '/Rcobrospagos',
+              iconComponent: { name: 'cil-chart' }
+            },
+          ]
+        },
+        {
+          name: 'Maquinas',
+          url: '/maquinas',
+          iconComponent: { name: 'cil-Braille' }
         },
         {
           name: 'usuarios',
           url: '/usuarios',
           iconComponent: { name: 'cil-user' }
         },
+       
+      ];
+    
+      for (var i = 0; i < this.prueba.length; i++) {
+        this.navItems.push(this.prueba[i]);
+      }
+    }
+    if (localStorage.getItem('permiso') == 'bordador') {
+      this.prueba = [
+        {
+          name: 'Producción',
+          url: '/produccionmaquina',
+          iconComponent: { name: 'cil-speedometer'  }
+          /*badge: {
+            color: 'success',
+            text: 'NEW'
+          }*/
+        },
+        {
+          name: 'Bordados',
+          url: '/bordados',
+          iconComponent: { name: 'cil-color-border'}
+        },
+      ]
+      for (var i = 0; i < this.prueba.length; i++) {
+
+        this.navItems.push(this.prueba[i])
+
+      }
+    }
+    if (localStorage.getItem('permiso') == 'encargado_producción') {
+      // console.log('true')
+      this.ocultar = false;
+      // console.log(false)
+
+      this.prueba = [
+        {
+          name: 'Producción',
+          url: '/produccion',
+          iconComponent: { name: 'cil-speedometer' },
+          color: 'blue'
+        },
+        {
+          name: 'Entradas',
+          url: '/entradas',
+          iconComponent: { name: 'cil-clipboard' }
+        },
+       
+        {
+          name: 'Clientes',
+          url: '/Clientes',
+          iconComponent: { name: 'cil-people' }
+        },
+        {
+          name: 'Bordados',
+          url: '/bordados',
+          iconComponent: { name: 'cil-color-border' }
+        },
+        {
+          name: 'Cobros',
+          url: '/cobros',
+          iconComponent: { name: 'cil-dollar' }
+        },
+        
+        // {
+        //   name: 'Maquinas',
+        //   url: '/maquinas',
+        //   iconComponent: { name: 'cil-calculator' }
+        // },
+
+
+        // {
+        //   name: 'usuarios',
+        //   url: '/usuarios',
+        //   iconComponent: { name: 'cil-user' }
+        // },
         // {
         //   name: 'Roles',
         //   url: '/roles',
@@ -84,57 +183,162 @@ export class SistemaLayoutComponent {
 
 
     }
-    if (localStorage.getItem('permiso') == 'bordador') {
+    if (localStorage.getItem('permiso') == 'finanzas') {
+      // console.log('true')
+      this.ocultar = false;
+      // console.log(false)
+
       this.prueba = [
         {
           name: 'Producción',
-          url: '/produccionmaquina',
-          iconComponent: { name: 'cil-chart' }
-          /*badge: {
-            color: 'success',
-            text: 'NEW'
-          }*/
+          url: '/produccion',
+          iconComponent: { name: 'cil-speedometer' },
+          color: 'blue'
         },
-      ]
-      for (var i = 0; i < this.prueba.length; i++) {
-
-        this.navItems.push(this.prueba[i])
-
-      }
-    }
-    if (localStorage.getItem('permiso') == 'recepción') {
-      this.prueba = [
         // {
-        //   name: 'Producción',
-        //   url: '/produccion',
-        //   iconComponent: { name: 'cil-chart' }
+        //   name: 'Entradas',
+        //   url: '/entradas',
+        //   iconComponent: { name: 'cil-clipboard' }
+        // },
+        {
+          name: 'Clientes',
+          url: '/Clientes',
+          iconComponent: { name: 'cil-people' }
+        },
+        {
+          name: 'Bordados',
+          url: '/bordados',
+          iconComponent: { name: 'cil-color-border' }
+        },
+        {
+          name: 'Cobros',
+          url: '/cobros',
+          iconComponent: { name: 'cil-dollar' }
+        },
+        {
+          name: 'reportes', // Nombre del menú desplegable
+          iconComponent: { name: 'cil-folder-open' },
+          children: [ // Elementos hijos del menú desplegable
+            {
+              name: 'Historial Entradas',
+              url: '/Rentradas',
+              iconComponent: { name: 'cil-bar-chart' }
+            },
+            {
+              name: 'Historial cobros',
+              url: '/Rcobros',
+              iconComponent: { name: 'cil-bar-chart' }
+            }
+          ]
+        },
+        // {
+        //   name: 'Maquinas',
+        //   url: '/maquinas',
+        //   iconComponent: { name: 'cil-calculator' }
+        // },
+
+
+        // {
+        //   name: 'usuarios',
+        //   url: '/usuarios',
+        //   iconComponent: { name: 'cil-user' }
+        // },
+        // {
+        //   name: 'Roles',
+        //   url: '/roles',
+        //   iconComponent: { name: 'cil-user' }
         //   /*badge: {
         //     color: 'success',
         //     text: 'NEW'
         //   }*/
         // },
+      ]
 
+      for (var i = 0; i < this.prueba.length; i++) {
+
+        this.navItems.push(this.prueba[i])
+
+      }
+
+
+
+    }
+    if (localStorage.getItem('permiso') == 'ventas') {
+      // console.log('true')
+      this.ocultar = false;
+      // console.log(false)
+
+      this.prueba = [
         {
-          name: 'Cobros',
-          url: '/cobros',
-          iconComponent: { name: 'cil-dollar' },
-
+          name: 'Servicios',
+          url: '/Servicios',
+          iconComponent: { name: 'cil-tags' }
         },
         {
           name: 'Clientes',
           url: '/Clientes',
-          iconComponent: { name: 'cil-user' }
-        },
-        {
-          name: 'Entradas',
-          url: '/entradas',
-          iconComponent: { name: 'cil-diamond' }
+          iconComponent: { name: 'cil-people' }
         },
         {
           name: 'Bordados',
           url: '/bordados',
-          iconComponent: { name: 'cil-star' }
+          iconComponent: { name: 'cil-color-border' }
         },
+
+   
+        {
+          name: 'reportes', // Nombre del menú desplegable
+          iconComponent: { name: 'cil-folder-open' },
+          children: [ // Elementos hijos del menú desplegable
+          {
+            name: 'Servicios',
+            url: '/Rservicios',
+            iconComponent: { name: 'cil-chart' }
+          },
+         
+          ]
+        },
+        
+      ]
+
+      for (var i = 0; i < this.prueba.length; i++) {
+
+        this.navItems.push(this.prueba[i])
+
+      }
+
+
+
+    }
+    if (localStorage.getItem('permiso') == 'recepción') {
+      this.prueba = [
+        {
+          name: 'Producción',
+          url: '/produccion',
+          iconComponent: { name: 'cil-speedometer' },
+          color: 'blue'
+        },
+        // {
+        //   name: 'Entradas',
+        //   url: '/entradas',
+        //   iconComponent: { name: 'cil-clipboard' }
+        // },
+        {
+          name: 'Clientes',
+          url: '/Clientes',
+          iconComponent: { name: 'cil-people' }
+        },
+        {
+          name: 'Bordados',
+          url: '/bordados',
+          iconComponent: { name: 'cil-color-border' }
+        },
+        {
+          name: 'Cobros',
+          url: '/cobros',
+          iconComponent: { name: 'cil-dollar' }
+        },
+       
 
       ]
       for (var i = 0; i < this.prueba.length; i++) {

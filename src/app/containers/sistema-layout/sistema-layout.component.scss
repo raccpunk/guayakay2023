@@ -1,17 +1,41 @@
-.prueba{
-    color: #005461;
-    background-color:  #005461;
- 
-    
-}
-.prueba2{
-    background: rgb(232,235,236);
-    background: linear-gradient(180deg, rgba(232,235,236,1) 86%, rgba(0,84,97,1) 100%);
-    
+body {
+  text-transform: uppercase;
 }
 
-.ontainer-fluid header nav ul li a{
-    text-decoration:none;
-    color: orange;
-    
-    }
+c-modal {
+  text-transform: uppercase;
+}
+
+button {
+  text-transform: uppercase;
+}
+
+option {
+  text-transform: uppercase;
+}
+
+c-sidebar{
+  color: #005461!important;
+}
+.prueba {
+  text-transform: uppercase;
+  color: red!important;
+  background-color: #005461;
+
+
+
+}
+
+.prueba2 {
+  text-transform: uppercase;
+  color: #005461!important;
+  background: rgb(232, 235, 236);
+  background: linear-gradient(180deg, rgba(232, 235, 236, 1) 86%, rgba(0, 84, 97, 1) 100%);
+
+}
+
+.ontainer-fluid header nav ul li a {
+  text-decoration: none;
+  color: orange;
+
+}

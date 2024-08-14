@@ -1,0 +1,101 @@
+<c-card class="mb-4">
+    <c-card-header>SERVICIO</c-card-header>
+    <c-card-body>
+        <form (ngSubmit)="onSubmit()" [formGroup]="ServicioFormDinamic"  >
+
+            <c-row class="justify-content-md-center">
+                <div class="form-group">
+                    <select formControlName="idcliente"  class="form-select">
+                        <option value="0" disabled>SELECCIONA UN CLIENTE</option>
+                        <option *ngFor="let Cliente of lista_clientes" value="{{Cliente.idcliente}}"
+                            placeholder="cliente">
+                            {{Cliente.nombre}}</option>
+                    </select>
+                </div>
+            </c-row>
+
+            <c-row class="justify-content-md-center">
+                <c-card-header>PEDIDO</c-card-header>
+            </c-row>
+
+            <c-row class="justify-content-md-center">
+                <div formArrayName="entradas">
+                    <ng-container *ngFor="let entrada of servicioslista.controls; index as i">
+                        <c-row class="justify-content-md-center" [formGroupName]="i">
+
+                         
+
+                            <div class="col-sm-12 col-md-4">
+                                <div>SERVICIO</div>
+                                <div class="form-group">
+                                    <textarea class="form-control input" type="text" formControlName="concepto" rows="3" 
+                                    cols="33"   placeholder="SERVICIO"></textarea>
+                
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <div>CANTIDAD</div>
+                                <div class="form-group">
+                                    <input class="form-control input" type="number" formControlName="cantidad" pattern="^[0-9]+" (change)="numerodinamic()"
+                                        placeholder="CANTIDAD" >
+                                    <div *ngIf="this.variable" style="color: red;">no se puede registrar una entrada menor a
+                                        1 O VACIA</div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3">
+                                <div>OBSERVACIÓN</div>
+                                <div class="form-group">
+                                    <textarea class="form-control input" type="text" formControlName="observacion" rows="3" 
+                                    cols="33"   placeholder="OBSERVACIÓN"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-2">
+                                <button (click)="mostrar=true" (click)="addServicio()"
+                                    class="btn btn-success btn btn-outline-whrite"
+                                    style="margin: 1px; border-radius: 15px; color: white;"
+                                    type="button"><b>+</b></button>
+
+
+                                <button *ngIf="mostrar" (click)="remove(i)"
+                                    class="btn btn-danger btn btn-outline-whrite"
+                                    style="margin: 1px; border-radius: 15px;  color: white;"
+                                    type="button"><b>-</b></button>
+                            </div>
+                        </c-row>
+                    </ng-container>
+                </div>
+            </c-row>
+            <p></p>
+            <div class="row">
+                <div class="form-group">
+                    <button  cButton type="button" type="submit" class="position-relative mx-2"  >
+                        Agregar SERVICIO 
+                        <c-badge   color="danger" position="top-end" shape="rounded-pill">{{
+                            servicioslista.length}}</c-badge>
+                    </button>
+                </div>
+            </div>
+            <br />
+        </form>
+    </c-card-body>
+</c-card>
+
+<!-- <button (click)="toggleLiveDemo()" cButton>Launch demo modal</button> -->
+
+<c-modal id="liveDemoModal" alignment="center" [visible]="visible" (visibleChange)="handleLiveDemoChange($event)">
+  <c-modal-header>
+   
+   
+    <!-- <button (click)="toggleLiveDemo()" cButtonClose></button> -->
+    <h4 style="font-weight: bold;" cModalTitle>SE HA REGISTRADO EL SERVICIO EXITOSAMENTE</h4>
+  </c-modal-header>
+
+  <c-modal-footer>
+    <button (click)="toggleLiveDemo()" cButton color="secondary">
+      ACEPTAR
+    </button>
+  
+  </c-modal-footer>
+</c-modal>
+

@@ -1,0 +1,72 @@
+<!-- <label for="start">Start date:</label> -->
+<form [formGroup]="historialForm " (ngSubmit)="buscarHistorial()">
+    <div class="row ">
+        <div class="col-sm-3">
+            <a>Fecha inicial</a>
+            <input type="date" formControlName="fechainicio" id="start" name="trip-start" value="2024-01-01"
+                min="2015-01-01" [max]='this.fechaActual' />
+        </div>
+        <div class="col-sm-3">
+            <a>Fecha final</a>
+            <input type="date" formControlName="fechafinal" id="start" name="trip-start" [value]="this.fechaActual"
+                [max]='this.fechaActual' />
+        </div>
+        <div class="col-sm-4">
+            <button cButton color="primary" type="submit">BUSCAR</button>
+
+        </div>
+
+
+    </div>
+</form>
+<div class="col-sm-6" *ngIf="historial_lista.length != 0">
+    <button cButton (click)="generarExcel()" class="buttonexcel">Exportar a Excel</button>
+
+</div>
+<p></p>
+<c-card *ngIf="variable">
+    <c-card-header>
+        <c-row class="justify-content-end">
+            <c-col lg="10">
+                HISTORIAL
+            </c-col>
+            <c-col lg="2">
+            </c-col>
+        </c-row>
+    </c-card-header>
+    <c-card-body>
+        <table class="table table-striped table-hover prueba" id="datatable-servicios">
+            <thead>
+                <tr>
+                    <th data-priority="1">SERVICIO</th>
+                    <!-- <th *ngIf="this.permiso == 'administrador'">MODIFICAR</th> -->
+                    <th>CONCEPTO</th>
+                    <th>OBSERVACIÓN</th>
+                    <th>CLIENTE</th>
+                    <th>CANTIDAD</th>
+                    <th>ESTATUS</th>
+                    <th>FECHA</th>
+             
+                    <!-- <th data-priority="1">Acciones</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let historial of historial_lista; let i = index"
+                    [ngClass]="{'resaltado6': historial.estado == 'Cancelada','resaltado4': historial.estado == 'Terminada', 'resaltado': historial.estado == 'En Pausa', 'resaltado5': historial.estado == 'Asignada a Cobro', 'resaltado2': historial.estado == 'En Proceso','resaltado3': historial.estado == 'Espera'}">
+              
+
+                    
+                    <td>{{historial.idservicio}}</td>
+                    <td>{{historial.concepto}}</td>
+                    <td>{{historial.observacion}}</td>
+                    <td>{{historial.tblCliente.nombre}}</td>
+                    <td>{{historial.cantidad}}</td>
+                    <td>{{historial.estado}}</td>
+                    <td>{{historial.createdAt | date:'dd/MM/yy'}}</td>
+
+                </tr>
+            </tbody>
+        </table>
+
+    </c-card-body>
+</c-card>

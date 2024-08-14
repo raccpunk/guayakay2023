@@ -5,19 +5,23 @@
                 Bordados
             </c-col>
             <c-col lg="2">
-                <button [cModalToggle]="staticBackdropModal.id" cButton>Agregar Bordado</button>
+                <button *ngIf="this.permiso != 'false'" [cModalToggle]="staticBackdropModal.id" cButton 
+                (click)="limpiarformulario()">Agregar
+                    Bordado</button>
 
             </c-col>
             <p></p>
             <select class="form-select" [formControl]="idcliente" (change)="obtenerBordadosCliente()">
-                <option selected value="0">Selecciona un cliente</option>
+                <option selected value="0" disabled>SELECCIONA UN CLIENTE</option>
+                <option selected value="-1">Activos</option>
+                <option selected value="-2">Inactivos</option>
                 <option *ngFor="let Cliente of lista_clientes;" value="{{Cliente.idcliente}}">{{Cliente.nombre}}
                 </option>
             </select>
         </c-row>
     </c-card-header>
     <c-card-body>
-        <table class="table table-striped table-hover responsive" id="datatable-bordados" width="100%">
+        <table class="table table-striped table-hover" id="datatable-bordados">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -28,23 +32,29 @@
                     <th>Ancho</th>
                     <th>Detalles del diseño</th>
                     <th>Precio</th>
-                    <th>Status</th>
-                    <th>Acciones</th>
+                    <th data-priority="2" *ngIf="this.permiso != 'false'">ESTATUS</th>
+                    <th data-priority="1" >Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let Bordado of lista_clienteBordado; let i = index">
                     <td>{{Bordado.idbordado}}</td>
                     <!-- <td>{{Bordados.numPuntadas}}</td> -->
+
+
                     <td>{{Bordado.tblBordado.nombre}}</td>
-                    <td data-toggle="modal" data-target="#Modal"><img width="300" height="200" align="center"
-                            src="{{this.img_urlfront + Bordado.tblBordado.portada != '0' ? this.img_urlfront + Bordado.tblBordado.portada : '../../assets/imagenes/OIP.jpg'}}"
+                    <!-- <td >{{Bordado.nombre}}</td> -->
+                    <td (click)="getArray(i)" [cModalToggle]="staticBackdropModal6.id"><img width="100%" height="100%"
+                            align="center"
+                            src="{{this.img_urlfront + Bordado.tblBordado.portada != 'https://guayakay-api-prod.basotecnologias.com/static/' ? this.img_urlfront + Bordado.tblBordado.portada : 'assets/lotto/sinfondo.png'}}"
                             class="imgmia"></td>
+
                     <td>{{Bordado.tblBordado.alto}}</td>
                     <td>{{Bordado.tblBordado.ancho}}</td>
                     <td>{{Bordado.tblBordado.observacion}}</td>
-                    <td>0.00</td>
-                    <td>
+                    <td style="font-size: 13px !important;">MINORISTA: ${{Bordado.precio[0].max}} MAYORISTA:
+                        ${{Bordado.precio[0].min}} SUGERIDO: ${{Bordado.precio[0].sugerido}}</td>
+                    <td *ngIf="this.permiso != 'false'">
                         <div>
                             <div class="btn" ngbTooltip="Activar / Desactivar usuario">
                                 <div
@@ -67,13 +77,19 @@
                     <td *ngIf="Bordado.tblBordado.activo != true">Inactivo</td>
                     </div>
                     </td>
-                    <td>
+                    <td data-priority="1"  *ngIf="Bordado.tblBordado.nombre != '0_no registrado'   && Bordado.tblBordado.nombre != '1_ponchado'  ">
 
-                        <a (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal2.id"
-                                cButton>View</button></a>
+                        <a (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal2.id" [disabled]="disablededit" 
+                                cButton>VER</button></a>
                         &nbsp;
-                        <a (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal5.id"
-                                cButton>Editar</button></a>
+                        <a *ngIf="this.permiso != 'false'" (click)="getArray(i)"><button
+                                [cModalToggle]="staticBackdropModal5.id" [disabled]="disablededit" cButton>EDITAR</button></a>
+
+                    </td>
+                    <td data-priority="1"  *ngIf="Bordado.tblBordado.nombre == '0_no registrado'  || Bordado.tblBordado.nombre == '1_ponchado' ">
+                        <a (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal2.id" [disabled]="disablededit" 
+                            cButton>VER</button></a>
+                     
 
                     </td>
                 </tr>
@@ -82,136 +98,188 @@
     </c-card-body>
 </c-card>
 
-<c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal">
+<c-modal  #staticBackdropModal data-backdrop="static" id="staticBackdropModal">
     <form [formGroup]="BordadoFormDinamic" (ngSubmit)="onSubmit()">
         <c-modal-header>
             <h5 cModalTitle>Agregar Bordado</h5>
-            <button [cModalToggle]="staticBackdropModal.id" cButtonClose></button>
+            <button [cModalToggle]="staticBackdropModal.id" #button_close_add cButtonClose></button>
         </c-modal-header>
         <c-modal-body>
-
+            <P></P>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>cliente</div>
                     <div class="form-group">
                         <select class="form-select" formControlName="idcliente" aria-label="Default select example">
-                            <option value="0">Selecciona un cliente</option>
+                            <option value="0" disabled>SELECCIONA UN CLIENTE</option>
                             <option *ngFor="let Cliente of lista_clientes" value="{{Cliente.idcliente}}">
                                 {{Cliente.nombre}}
                             </option>
                         </select>
                     </div>
+                    <div *ngIf="this.variable2" style="color: red;">cliente ES REQUERIDO</div>
+
                 </div>
             </div>
+            <P></P>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>DISEÑO</div>
                     <div class="form-group">
-                        <input class="form-control" formControlName="disenio" type="text" placeholder="diseño ">
+                        <input class="form-control" formControlName="disenio" type="text"
+                            placeholder="NOMBRE DEL DISEÑO ">
+                        <div *ngIf="this.variable" style="color: red;">NOMBRE DEL DISEÑO ES REQUERIDO</div>
+
+                    </div>
+
+                </div>
+            </div>
+            <P></P>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div>PUNTADAS</div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="puntadas" placeholder="PUNTADAS"
+                            pattern="^[0-9]+" [ngClass]="{ 'is-invalid': submitted && f['puntadas'].errors }">
+                        <div *ngIf="submitted && f['puntadas'].errors" class="invalid-feedback">
+                            <div *ngIf="f['puntadas'].errors['required']">este campo solo admite caracteres númericos
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <P></P>
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group">
-                        <input class="form-control" type="number" formControlName="puntadas" placeholder="puntadas">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
+                    <div>TÉCNICA</div>
                     <div class="form-group">
                         <select class="form-select" formControlName="Tecnica" aria-label="Default select example">
-                            <option value="0">Selecciona una tecnica</option>
+                            <option value="0" disabled>SELECCIONA UNA TÉCNICA</option>
                             <option *ngFor="let Tecnicas of lista_tecnicas" value="{{Tecnicas.idtecnica}}">
                                 {{Tecnicas.nombre}}</option>
                         </select>
                     </div>
+                    <div *ngIf="this.variable3" style="color: red;">TÉCNICA DEL DISEÑO ES REQUERIDO</div>
                 </div>
             </div>
+            <P></P>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>ARO</div>
                     <div class="form-group">
                         <select formControlName="aro" class="form-select" aria-label="Default select example">
-                            <option value="0">Selecciona un aro</option>
+                            <option value="0" disabled>SELECCIONA UN ARO</option>
                             <option *ngFor="let aro of lista_cabezales" value="{{aro.idcabezal}}">
                                 {{aro.nombre}}</option>
                         </select>
                     </div>
+                    <div *ngIf="this.variable4" style="color: red;">ARO DEL DISEÑO ES REQUERIDO</div>
                 </div>
             </div>
+            <P></P>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>ALTO</div>
                     <div class="form-group">
-                        <input class="form-control" type="number" formControlName="alto" placeholder="Alto">
+                        <input class="form-control" type="text" formControlName="alto" placeholder="ALTO"
+                            pattern="^[0-9]+" [ngClass]="{ 'is-invalid': submitted && f['alto'].errors }">
+                        <div *ngIf="submitted && f['alto'].errors" class="invalid-feedback">
+                            <div *ngIf="f['alto'].errors['required']">este campo solo admite caracteres númericos</div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <P></P>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>ANCHO</div>
                     <div class="form-group">
-                        <input class="form-control" type="number" formControlName="ancho" placeholder="Ancho">
+                        <input class="form-control" type="text" formControlName="ancho" placeholder="ANCHO"
+                            pattern="^[0-9]+" [ngClass]="{ 'is-invalid': submitted && f['ancho'].errors }">
+                        <div *ngIf="submitted && f['ancho'].errors" class="invalid-feedback">
+                            <div *ngIf="f['ancho'].errors['required']">este campo solo admite caracteres númericos</div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <P></P>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>TIEMPO DE TIRADA</div>
+                    <div class="form-group">
+                        <input class="form-control" type="number" formControlName="tiempot"
+                            placeholder="TIEMPO DE TIRADA">
+                    </div>
+                </div>
+            </div>
+            <P></P>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div>DETALLES DE DISEÑO</div>
                     <div class="form-group">
                         <input class="form-control" type="text" formControlName="observacion"
-                            placeholder="Detalles del diseño">
+                            placeholder="DETALLES DEL DISEÑO">
                     </div>
                 </div>
             </div>
+            <P></P>
             <h4 class="information mt-2 text-left">Ingrese las
                 imagenes del bordado</h4>
             <h6 class="information mt-1 text-left">puede ser una o
                 varias imagenes</h6>
             <div class="row">
                 <div class="col-sm-12">
+                    <a>PORTADA</a>
                     <div class="form-group">
-                        <input name="src-file2" (change)="onFileSelect($event, 'portada')" aria-label="Archivo"
-                            class="form-control" type="file" formControlName="portada"
-                            accept="image/png, .jpeg, .jpg, image/gif">
+                        <input class="form-control" (change)="onFileSelect($event, 'portada')" id="fileControl"
+                        type="file" accept="image/png, .jpeg, .jpg, image/gif" formControlName="portada" value="">
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12">
+                    <a>IMAGEN</a>
                     <div class="form-group">
-                        <input class="form-control" (change)="onFileSelect($event, 'imagen1')" type="file"
-                            accept="image/png, .jpeg, .jpg, image/gif" formControlName="imagen1" value="">
+                        <input class="form-control" (change)="onFileSelect($event, 'imagen1')" id="fileControl1"
+                            type="file" accept="image/png, .jpeg, .jpg, image/gif" formControlName="imagen1" value="">
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12">
+                    <a>IMAGEN</a>
                     <div class="form-group">
-                        <input class="form-control" (change)="onFileSelect($event, 'imagen2')" type="file"
-                            accept="image/png, .jpeg, .jpg, image/gif" formControlName="imagen2" value="">
+                        <input class="form-control" (change)="onFileSelect($event, 'imagen2')" id="fileControl2"
+                            type="file" accept="image/png, .jpeg, .jpg, image/gif" formControlName="imagen2" value="">
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12">
+                    <a>IMAGEN</a>
                     <div class="form-group">
-                        <input class="form-control" (change)="onFileSelect($event, 'imagen3')" type="file"
-                            accept="image/png, .jpeg, .jpg, image/gif" formControlName="imagen3" value="">
+                        <input class="form-control" (change)="onFileSelect($event, 'imagen3')" id="fileControl3"
+                            type="file" accept="image/png, .jpeg, .jpg, image/gif" formControlName="imagen3" value="">
                     </div>
                 </div>
             </div>
-
-
+            <P></P>
+            <h4>Secuencias</h4>
             <ng-container formArrayName="patrones" *ngFor="let Patron of hilosLista.controls; index as i">
-                <h4>Secuencias</h4>
+
                 <c-row class="justify-content-md-center" [formGroupName]="i">
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <input class="form-control" type="text" formControlName="hilo" placeholder="hilo"
+                                <input class="form-control" type="text" formControlName="hilo" placeholder="HILO"
                                     [ngClass]="{ 'is-invalid': submitted && f['hilo'].errors }">
                                 <div *ngIf="submitted && f['hilo'].errors" class="invalid-feedback">
                                     <div *ngIf="f['hilo'].errors['required']">hilo is
                                         required</div>
                                 </div>
                             </div>
+                            <div *ngIf="this.variable5" style="color: red;">LA SECUENCIA CON ALMENOS UN HILO ES
+                                REQUERIDO</div>
                         </div>
                     </div>
 
@@ -230,54 +298,60 @@
 
         </c-modal-body>
         <c-modal-footer>
+            <c-row *ngIf="advertencia">
+                <c-alert color="warning">{{mensaje_error }} POR FAVOR INGRESE DE NUEVO LAS IMAGENES</c-alert>
+            </c-row>
             <button [cModalToggle]="staticBackdropModal.id" cButton color="secondary">
-                Close
+                CERRAR
             </button>
-            <button cButton color="primary" type="submit">Understood</button>
+            <button cButton color="primary" type="submit">GUARDAR</button>
 
 
         </c-modal-footer>
     </form>
 </c-modal>
 
-<c-modal class="modal-xl" #staticBackdropModal2 backdrop="static" id="staticBackdropModal2">
+<c-modal class="modal-xl" #staticBackdropModal2 data-backdrop="static" id="staticBackdropModal2">
 
     <c-modal-header>
         <h5 cModalTitle>Información del Bordado</h5>
         <button [cModalToggle]="staticBackdropModal2.id" cButtonClose></button>
     </c-modal-header>
+   
     <c-modal-body>
-        <div class="container text-center">
-            <div class="row align-items-start">
-                <div class="col">
-                    <tr>
-                        <th>Cliente:</th>
-                        <td>{{this.nombre}}</td>
-                    </tr>
-                    <p></p>
-                    <tr>
-                        <th>Bordado:</th>
-                        <td>{{this.nombreBordado}}</td>
-                    </tr>
+     
+        <div class="row align-items-start">
+            <div class="col">
 
 
-                    <p></p>
-                    <tr>
-                        <th>Número de puntadas:</th>
-                        <td>{{this.num_puntadas}}</td>
-                    </tr>
-                    <p></p>
-                    <tr>
-                        <th>Alto:</th>
-                        <td>{{this.alto}}</td>
-                    </tr>
+                <tr>
+                    <th>Cliente:</th>
+                    <td>{{this.nombre}}</td>
+                </tr>
+                <p></p>
+                <tr>
+                    <th>Bordado:</th>
+                    <td>{{this.nombreBordado}}</td>
+                </tr>
 
-                    <p></p>
-                    <tr>
-                        <th>Ancho:</th>
-                        <td>{{this.ancho}}</td>
-                    </tr>
-               
+
+                <p></p>
+                <tr>
+                    <th>Número de puntadas:</th>
+                    <td>{{this.num_puntadas}}</td>
+                </tr>
+                <p></p>
+                <tr>
+                    <th>Alto:</th>
+                    <td>{{this.alto}}</td>
+                </tr>
+
+                <p></p>
+                <tr>
+                    <th>Ancho:</th>
+                    <td>{{this.ancho}}</td>
+                </tr>
+
 
 
                 <p></p>
@@ -287,57 +361,58 @@
                 </tr>
                 <p></p>
                 <tr>
-                    <th>Cabezal:</th>
+                    <th>Aro:</th>
                     <td>{{this.cabezal}}</td>
                 </tr>
-             
-                    <p></p>
-                    <tr>
-                        <th>Detalles del Bordado:</th>
-                        <td>{{this.observacionB}}</td>
-                    </tr>
-                    <p></p>
-                </div>
-                <div class="col">
-                    Portada
-                    <tr>
-                        
-                        <td><img width="400" height="300" align="center" src="{{this.portada}}"></td>
-                    </tr>
-                    <p></p>
-                    Imagen
-                    <tr>
-                        
-                        <td><img width="150" height="100" align="center" src="{{this.imagen1}}"></td>
-                        <td><img width="150" height="100" align="center" src="{{this.imagen2}}"></td>
-                        <td><img width="150" height="100" align="center" src="{{this.imagen3}}"></td>
-                    </tr>
-                    <p></p>
-                    <h5>
-                        <th>Patron</th>
-                    </h5>
-                    <tr *ngFor="let hilo of hilosA;">
-                        <th>hilo:</th>
-                        <td>{{hilo.orden}} - {{hilo.hilo}}</td>
+                <p></p>
+                <tr>
+                    <th>tiempo de tirada:</th>
+                    <td>{{this.minutos}} min {{this.resto}} seg</td>
+                </tr>
+                <p></p>
+                <tr>
+                    <th>Detalles del Bordado:</th>
+                    <td>{{this.observacionB}}</td>
+                </tr>
+                <p></p>
+                <p></p>
+                <h5>
+                    <th>SECUENCIAS</th>
+                </h5>
+                <tr style="text-align: left !important;" *ngFor="let hilo of hilosA;">
 
-                    </tr>
-                    <p></p>
-                </div>
-            </div>
+                    <td>{{hilo.orden}} - {{hilo.hilo}}</td>
+
+                </tr>
+                <!-- You can now use NgxImageZoom component in app.component.html -->
+
+
+            </div >
+            
+<div class="dive">
+            <ngx-gallery *ngIf="galeriaAbierta" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
         </div>
+        </div>
+   <div>
+
+   </div>
+        
+
+
     </c-modal-body>
+
     <c-modal-footer>
         <button [cModalToggle]="staticBackdropModal2.id" cButton color="secondary">
-            Close
+            CERRAR
         </button>
 
     </c-modal-footer>
 </c-modal>
 
-<c-modal #staticBackdropModal3 backdrop="static" id="staticBackdropModal3">
+<c-modal #staticBackdropModal3 data-backdrop="static" id="staticBackdropModal3">
     <c-modal-header>
         <h5 cModalTitle></h5>
-        <button [cModalToggle]="staticBackdropModal3.id" cButtonClose></button>
+        <button [cModalToggle]="staticBackdropModal3.id" #button_close_add3 cButtonClose></button>
     </c-modal-header>
     <c-modal-body>
         <div class="icon-box">
@@ -347,16 +422,16 @@
     </c-modal-body>
     <c-modal-footer>
         <button [cModalToggle]="staticBackdropModal3.id" cButton color="secondary">
-            Close
+            CERRAR
         </button>
-        <button cButton color="primary" (click)="Desactivar()">Understood</button>
+        <button cButton color="primary" (click)="Desactivar()">GUARDAR</button>
     </c-modal-footer>
 </c-modal>
 
-<c-modal #staticBackdropModal4 backdrop="static" id="staticBackdropModal4">
+<c-modal #staticBackdropModal4 data-backdrop="static" id="staticBackdropModal4">
     <c-modal-header>
         <h5 cModalTitle></h5>
-        <button [cModalToggle]="staticBackdropModal4.id" cButtonClose></button>
+        <button [cModalToggle]="staticBackdropModal4.id" #button_close_add4 cButtonClose></button>
     </c-modal-header>
     <c-modal-body>
         <div class="icon-box2">
@@ -367,87 +442,114 @@
     </c-modal-body>
     <c-modal-footer>
         <button [cModalToggle]="staticBackdropModal4.id" cButton color="secondary">
-            Close
+            CERRAR
         </button>
-        <button cButton color="primary" (click)="Activar()">Understood</button>
+        <button cButton color="primary" (click)="Activar()">GUARDAR</button>
     </c-modal-footer>
 </c-modal>
 
-<c-modal #staticBackdropModal5 backdrop="static" id="staticBackdropModal5">
+<c-modal #staticBackdropModal5 data-backdrop="static" id="staticBackdropModal5">
     <form [formGroup]="editBordadoFormDinamic" (ngSubmit)="onSubmit2()">
         <c-modal-header>
             <h5 cModalTitle>Editar Bordado</h5>
-            <button [cModalToggle]="staticBackdropModal5.id" cButtonClose></button>
+            <button [cModalToggle]="staticBackdropModal5.id" cButtonClose #button_close_detalles></button>
         </c-modal-header>
         <c-modal-body>
 
             <div class="row">
+                <div>cliente</div>
                 <div class="col-sm-12">
                     <div class="form-group">
                         <select class="form-select" formControlName="idcliente" aria-label="Default select example">
-                            <option value="0">Selecciona un cliente</option>
+                            <option value="0" disabled>SELECCIONA UN CLIENTE</option>
                             <option *ngFor="let Cliente of lista_clientes" value="{{Cliente.idcliente}}">
                                 {{Cliente.nombre}}
                             </option>
                         </select>
+
                     </div>
                 </div>
             </div>
+            <P></P>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>NOMBRE DEL DISEÑO</div>
                     <div class="form-group">
-                        <input class="form-control" formControlName="disenio" type="text" placeholder="diseño ">
+                        <input class="form-control" formControlName="disenio" type="text" placeholder="DISEÑO ">
                     </div>
+                    <div *ngIf="this.Evariable" style="color: red;">NOMBRE DEL DISEÑO ES REQUERIDO</div>
                 </div>
             </div>
+            <P></P>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>Número de puntadas</div>
                     <div class="form-group">
-                        <input class="form-control" type="number" formControlName="puntadas" placeholder="puntadas">
+                        <input class="form-control" type="number" formControlName="puntadas" placeholder="PUNTADAS">
                     </div>
                 </div>
             </div>
+            <P></P>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>Técnica</div>
                     <div class="form-group">
                         <select class="form-select" formControlName="Tecnica" aria-label="Default select example">
-                            <option value="0">Selecciona una tecnica</option>
+                            <option value="0" disabled>SELECCIONA UNA TÉCNICA</option>
                             <option *ngFor="let Tecnicas of lista_tecnicas" value="{{Tecnicas.idtecnica}}">
                                 {{Tecnicas.nombre}}</option>
                         </select>
                     </div>
                 </div>
             </div>
+            <P></P>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>ARO</div>
                     <div class="form-group">
                         <select formControlName="aro" class="form-select" aria-label="Default select example">
-                            <option value="0">Selecciona un aro</option>
+                            <option value="0" disabled>SELECCIONA UN ARO</option>
                             <option *ngFor="let aro of lista_cabezales" value="{{aro.idcabezal}}">
                                 {{aro.nombre}}</option>
                         </select>
                     </div>
                 </div>
             </div>
+            <P></P>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>ALTO</div>
                     <div class="form-group">
-                        <input class="form-control" type="number" formControlName="alto" placeholder="Alto">
+                        <input class="form-control" type="number" formControlName="alto" placeholder="ALTO">
                     </div>
                 </div>
             </div>
+            <P></P>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>ANCHO</div>
                     <div class="form-group">
-                        <input class="form-control" type="number" formControlName="ancho" placeholder="Ancho">
+                        <input class="form-control" type="number" formControlName="ancho" placeholder="ANCHO">
                     </div>
                 </div>
             </div>
+            <P></P>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>TIEMPO DE TIRADA </div>
+                    <div class="form-group">
+                        <input class="form-control" type="number" formControlName="tiempot"
+                            placeholder="TIEMPO DE TIRADA">
+                    </div>
+                </div>
+            </div>
+            <P></P>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div>DETALLES DEL DISEÑO</div>
                     <div class="form-group">
                         <input class="form-control" type="text" formControlName="observacion"
-                            placeholder="Detalles del diseño">
+                            placeholder="DETALLES DEL DISEÑO">
                     </div>
                 </div>
             </div>
@@ -456,58 +558,66 @@
             <h6 class="information mt-1 text-left">puede ser una o
                 varias imagenes</h6>
             <div class="row">
+                <a>portada</a>
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <input name="src-file2" (change)="onFileSelect($event, 'portada')" aria-label="Archivo" class="form-control" type="file"
-                            formControlName="portada" accept="image/png, .jpeg, .jpg, image/gif">
+                        <input name="src-file2" (change)="onFileSelect($event, 'portada')" aria-label="Archivo"
+                            class="form-control" type="file" formControlName="portada"
+                            accept="image/png, .jpeg, .jpg, image/gif">
                     </div>
                 </div>
             </div>
             <div class="row">
+                <a>imagen 1</a>
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <input class="form-control" (change)="onFileSelect($event, 'imagen1')" type="file" accept="image/png, .jpeg, .jpg, image/gif"
-                            formControlName="imagen1" value="">
+                        <input class="form-control" (change)="onFileSelect($event, 'imagen1')" type="file"
+                            accept="image/png, .jpeg, .jpg, image/gif" formControlName="imagen1" value="">
                     </div>
                 </div>
             </div>
             <div class="row">
+                <a>imagen 2</a>
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <input class="form-control" (change)="onFileSelect($event, 'imagen2')"  type="file" accept="image/png, .jpeg, .jpg, image/gif"
-                            formControlName="imagen2" value="">
+                        <input class="form-control" (change)="onFileSelect($event, 'imagen2')" type="file"
+                            accept="image/png, .jpeg, .jpg, image/gif" formControlName="imagen2" value="">
                     </div>
                 </div>
             </div>
             <div class="row">
+                <a>imagen 3</a>
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <input class="form-control" (change)="onFileSelect($event, 'imagen3')"  type="file" accept="image/png, .jpeg, .jpg, image/gif"
-                            formControlName="imagen3" value="">
+                        <input class="form-control" (change)="onFileSelect($event, 'imagen3')" type="file"
+                            accept="image/png, .jpeg, .jpg, image/gif" formControlName="imagen3" value="">
                     </div>
                 </div>
             </div>
 
-
+            <P></P>
+            <h4>Secuencias</h4>
             <ng-container formArrayName="patrones" *ngFor="let Patron of hilosLista2.controls; index as i">
-                <h4>Secuencias</h4>
+
                 <c-row class="justify-content-md-center" [formGroupName]="i">
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <input class="form-control" type="text" formControlName="hilo" placeholder="hilo"
+                                <input class="form-control" type="text" formControlName="hilo" placeholder="HILO"
                                     [ngClass]="{ 'is-invalid': submitted && f['hilo'].errors }">
                                 <div *ngIf="submitted && f['hilo'].errors" class="invalid-feedback">
                                     <div *ngIf="f['hilo'].errors['required']">hilo is
                                         required</div>
                                 </div>
+                                <div *ngIf="this.Evariable2" style="color: red;">LA SECUENCIA CON ALMENOS UN HILO ES
+                                    REQUERIDO</div>
                             </div>
                         </div>
                     </div>
 
 
                     <div class="col-sm-12 col-md-2">
-                        <button (click)="mostrar=true" (click)="addhilos2()"
+                        <button (click)="mostrar=true" (click)="addhilos2( '' )"
                             class="btn btn-success btn btn-outline-whrite"
                             style="margin: 1px; border-radius: 15px; color: white;" type="button"><b>+</b></button>
 
@@ -521,11 +631,39 @@
         </c-modal-body>
         <c-modal-footer>
             <button [cModalToggle]="staticBackdropModal5.id" cButton color="secondary">
-                Close
+                CERRAR
             </button>
-            <button cButton color="primary" type="submit">Understood</button>
+            <button cButton color="primary" type="submit">GUARDAR</button>
 
 
         </c-modal-footer>
     </form>
+</c-modal>
+
+<c-modal class="modal-lg" #staticBackdropModal6 data-backdrop="static" id="staticBackdropModal6"
+    style="text-align: center;">
+
+    <c-modal-header>
+
+        <button [cModalToggle]="staticBackdropModal6.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body class="img">
+        <div style="text-align: center;">
+            <td *ngIf="sinportada == false" style="text-align: center;"><img style="text-align: center;" class="img-100"
+                    src="{{this.portada}}">
+            </td>
+            <td *ngIf="sinportada == true" style="text-align: center;"><img style="text-align: center;" class="img-100"
+                    src="assets/lotto/sinfondo.png">
+            </td>
+        </div>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="staticBackdropModal6.id" cButton color="secondary">
+            CERRAR
+        </button>
+
+
+
+    </c-modal-footer>
+
 </c-modal>

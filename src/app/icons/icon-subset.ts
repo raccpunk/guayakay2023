@@ -1,5 +1,10 @@
 import {
+  cilColorBorder,
+  cilFolderOpen,
+  cilBraille,
+  cilBarChart,
   cibCcAmex,
+  cilClipboard,
   cibCcApplePay,
   cibCcMastercard,
   cibCcPaypal,
@@ -95,7 +100,12 @@ import {
 } from '@coreui/icons';
 
 export const iconSubset = {
+  cilColorBorder,
+  cilFolderOpen,
+  cilBraille,
   cibCcAmex,
+  cilBarChart,
+  cilClipboard,
   cibCcApplePay,
   cibCcMastercard,
   cibCcPaypal,
@@ -191,8 +201,13 @@ export const iconSubset = {
 };
 
 export enum IconSubset {
+  cilColorBorder= 'cilColorBorder',
+  cilFolderOpen = 'cilFolderOpen',
+  cilBraille = 'cilBraille',
+  cilBarChart= 'cilBarChart',
   cibCcAmex = 'cibCcAmex',
   cibCcApplePay = 'cibCcApplePay',
+  cilClipboard = 'cilClipboard',
   cibCcMastercard = 'cibCcMastercard',
   cibCcPaypal = 'cibCcPaypal',
   cibCcStripe = 'cibCcStripe',

@@ -5,7 +5,7 @@
                 Usuarios
             </c-col>
             <c-col lg="2">
-                <button [cModalToggle]="staticBackdropModal.id" cButton>Agregar Usuario</button>
+                <button [cModalToggle]="staticBackdropModal.id" cButton>AGREGAR USUARIO</button>
 
             </c-col>
         </c-row>
@@ -18,19 +18,20 @@
                     <th>usuario</th>
                     <th>Nombre</th>
                     <th>Rol</th>
-                    <th>Estatus</th>
-                    <th>Acciones</th>
+                    <th data-priority="2">Estatus</th>
+                    <th data-priority="1">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let Usuarios of lista_usuarios; let i = index">
-                    <td>{{Usuarios.idusuario}}</td>
-                    <td>{{Usuarios.usuario}}</td>
+                    <td >{{Usuarios.idusuario}}</td>
+                    <td style="text-transform: none;">{{Usuarios.usuario}}</td>
                     <td>{{Usuarios.nombre}}</td>
                     <td>{{Usuarios.rol}}</td>
-                    <td>
+                  
+                    <td >
                         <div>
-                            <div class="btn" ngbTooltip="Activar / Desactivar usuario">
+                            <div *ngIf="Usuarios.rol != 'administrador'" class="btn" ngbTooltip="Activar / Desactivar usuario">
                                 <div
                                     class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                                     <input type="checkbox" class="custom-control-input" #inputChek
@@ -51,10 +52,10 @@
                     <td>
 
                         <a (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal2.id"
-                                cButton>Ver</button></a>
+                                cButton>VER</button></a>
                         &nbsp;
-                        <a (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal5.id"
-                                cButton>Editar</button></a>
+                        <a  (click)="getArray(i)"><button [cModalToggle]="staticBackdropModal5.id"
+                                cButton>EDITAR</button></a>
 
                     </td>
                 </tr>
@@ -64,23 +65,24 @@
     </c-card-body>
 </c-card>
 
-<c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal">
+<c-modal #staticBackdropModal  id="staticBackdropModal" data-backdrop="static">
     <form (ngSubmit)="onSubmit()" [formGroup]="UserForm">
         <c-modal-header>
             <h5 cModalTitle>Agregar Usuario</h5>
-            <button [cModalToggle]="staticBackdropModal.id" cButtonClose></button>
+            <button [cModalToggle]="staticBackdropModal.id"  cButtonClose #button_close_detail></button>
         </c-modal-header>
         <c-modal-body>
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="nombre" placeholder="Nombre"
+                        <div>NOMBRE</div>
+                        <input class="form-control" type="text" formControlName="nombre" placeholder="NOMBRE"
                             [ngClass]="{ 'is-invalid': submitted && f['nombre'].errors }">
                         <div *ngIf="submitted && f['nombre'].errors" class="invalid-feedback">
-                            <div *ngIf="f['nombre'].errors['required']">name is
-                                required</div>
+                            <div *ngIf="f['nombre'].errors['required']">Nombre es requerido</div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -88,12 +90,16 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="usuario" placeholder="Usuario"
+                        <div>USUARIO</div>
+                        <input class="form-control" type="text" formControlName="usuario" placeholder="USUARIO"
                             [ngClass]="{ 'is-invalid': submitted && f['usuario'].errors }">
                         <div *ngIf="submitted && f['usuario'].errors" class="invalid-feedback">
-                            <div *ngIf="f['usuario'].errors['required']">email is required</div>
+                            <div *ngIf="f['usuario'].errors['required']">USUARIO es requerido </div>
                         </div>
                     </div>
+                    <c-row *ngIf="variable">
+                        <c-alert color="warning">{{mensaje_error}}</c-alert>
+                    </c-row>
                 </div>
             </div>
 
@@ -101,26 +107,39 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <input class="form-control" type="password" formControlName="password" placeholder="Password"
-                            [ngClass]="{ 'is-invalid': submitted && f['password'].errors }">
+                        <div>CONTRASEÑA</div>
+                        <input class="form-control" type="password" formControlName="password" minlength="5"
+                            placeholder="CONTRASEÑA" [ngClass]="{ 'is-invalid': submitted && f['password'].errors }">
                         <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
-                            <div *ngIf="f['password'].errors['required']">password is required</div>
+                            <div *ngIf="f['password'].errors['required']">CONTRASEÑA es requerido </div>
+                            <div *ngIf="f['password'].errors['minlength']">este campo requiere como mínimo 5 carácteres
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <p></p>
+
             <div class="row">
                 <div class="col-sm-12">
+                    <div>ROL</div>
                     <div class="form-group">
-                        <select class="form-select" formControlName="rol">
-                            <option selected value="0" disabled>Selecciona un Rol</option>
+                        <select class="form-select" formControlName="rol" > 
+                            <option selected value="0" disabled>SELECCIONA UN ROL</option>
                             <option value="recepción">recepción
                             </option>
                             <option value="bordador">bordador
                             </option>
+                            <option value="encargado_producción">encargado de producción
+                            </option>
+                            <option value="finanzas">finanzas
+                            </option>
+                            <option value="ventas">ventas
+                            </option>
                         </select>
                     </div>
+                    <div *ngIf="rolalarm" style="color: red;">ROL es requerido </div>
                 </div>
             </div>
         </c-modal-body>
@@ -134,7 +153,7 @@
     </form>
 </c-modal>
 
-<c-modal #staticBackdropModal2 backdrop="static" id="staticBackdropModal2">
+<c-modal #staticBackdropModal2 data-backdrop="static" id="staticBackdropModal2">
     <c-modal-header>
         <h5 cModalTitle>Información del Usuario</h5>
         <button [cModalToggle]="staticBackdropModal2.id" cButtonClose></button>
@@ -148,7 +167,7 @@
             <p></p>
             <tr>
                 <th scope="row">Usuario: </th>
-                <td>{{usuarioUnico[0].nombre}}</td>
+                <td style="text-transform: none;">{{usuarioUnico[0].usuario}}</td>
                 <p></p>
             </tr>
             <p></p>
@@ -163,7 +182,7 @@
             </tr>
             <p></p>
             <tr>
-                <th>Status:</th>
+                <th>estatus:</th>
                 <td *ngIf="usuarioUnico[0].activo == true">Activo</td>
                 <td *ngIf="usuarioUnico[0].activo != true">Inactivo</td>
             </tr>
@@ -177,10 +196,10 @@
     </c-modal-footer>
 </c-modal>
 
-<c-modal #staticBackdropModal3 backdrop="static" id="staticBackdropModal3">
+<c-modal #staticBackdropModal3 data-backdrop="static" id="staticBackdropModal3">
     <c-modal-header>
         <h5 cModalTitle></h5>
-        <button [cModalToggle]="staticBackdropModal3.id" cButtonClose></button>
+        <button [cModalToggle]="staticBackdropModal3.id" #button_close_detail3 cButtonClose></button>
     </c-modal-header>
     <c-modal-body>
         <div class="icon-box">
@@ -196,10 +215,10 @@
     </c-modal-footer>
 </c-modal>
 
-<c-modal #staticBackdropModal4 backdrop="static" id="staticBackdropModal4">
+<c-modal #staticBackdropModal4 data-backdrop="static" id="staticBackdropModal4">
     <c-modal-header>
         <h5 cModalTitle></h5>
-        <button [cModalToggle]="staticBackdropModal4.id" cButtonClose></button>
+        <button [cModalToggle]="staticBackdropModal4.id"  #button_close_detail4 cButtonClose></button>
     </c-modal-header>
     <c-modal-body>
         <div class="icon-box2">
@@ -216,22 +235,22 @@
     </c-modal-footer>
 </c-modal>
 
-<c-modal #staticBackdropModal5 backdrop="static" id="staticBackdropModal5">
+<c-modal #staticBackdropModal5 data-backdrop="static" id="staticBackdropModal5">
     <form (ngSubmit)="onSubmit2()" [formGroup]="UserEditForm">
         <c-modal-header>
             <h5 cModalTitle>Editar Usuario</h5>
-            <button [cModalToggle]="staticBackdropModal5.id" cButtonClose></button>
+            <button [cModalToggle]="staticBackdropModal5.id" cButtonClose #button_close_detail5></button>
         </c-modal-header>
         <c-modal-body>
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="nombre" placeholder="Nombre"
+                        <div>NOMBRE</div>
+                        <input class="form-control" type="text" formControlName="nombre" placeholder="NOMBRE"
                             [ngClass]="{ 'is-invalid': submitted && f2['nombre'].errors }">
                         <div *ngIf="submitted && f2['nombre'].errors" class="invalid-feedback">
-                            <div *ngIf="f2['nombre'].errors['required']">name is
-                                required</div>
+                            <div *ngIf="f2['nombre'].errors['required']">Nombre es requerido </div>
                         </div>
                     </div>
                 </div>
@@ -240,31 +259,71 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="usuario" placeholder="Usuario"
+                        <div>USUARIO</div>
+                        <input class="form-control" type="text" formControlName="usuario" placeholder="USUARIO"
                             [ngClass]="{ 'is-invalid': submitted && f2['usuario'].errors }">
                         <div *ngIf="submitted && f2['usuario'].errors" class="invalid-feedback">
-                            <div *ngIf="f2['usuario'].errors['required']">usuario is required</div>
+                            <div *ngIf="f2['usuario'].errors['required']">USUARIO es requerido </div>
                         </div>
                     </div>
                 </div>
             </div>
-   
+            <p></p>
+            <div *ngIf="usuarioUnico[0].rol != 'administrador'" class="row">
+                <div class="col-sm-12">
+                    <div>ROL</div>
+                    <div class="form-group">
+                        <select class="form-select" formControlName="rol" > 
+                            <option selected value="0" disabled>SELECCIONA UN ROL</option>
+                            <option value="recepción">recepción
+                            </option>
+                            <option value="bordador">bordador
+                            </option>
+                            <option value="encargado_producción">encargado de producción
+                            </option>
+                            <option value="finanzas">finanzas
+                            </option>
+                            <option value="ventas">ventas
+                            </option>
+                        </select>
+                    </div>
+                   
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div>CONTRASEÑA</div>
+                    <div class="form-group">
+                        <input class="form-control" type="password" formControlName="password" minlength="5"
+                            placeholder="CONTRASEÑA" [ngClass]="{ 'is-invalid': submitted && f2['password'].errors }">
+                        <div *ngIf="submitted && f2['password'].errors" class="invalid-feedback">
+                        
+                            <div *ngIf="f2['password'].errors['minlength']">este campo requiere como mínimo 5 carácteres
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <form [formGroup]="MaquinaFormDinamic" *ngIf="this.asignarmaquina">
-
+                <p></p>
+            
                 <div formArrayName="maquinas">
                     <ng-container *ngFor="let entrada of maquinalista.controls; index as i">
                         <c-row [formGroupName]="i">
                             <p></p>
                             <div class="col-sm-12">
+                            
+                                <div>máquina</div>
                                 <div class="form-group">
                                     <select class="form-select" formControlName="idmaquina">
-                                        <option selected value="0">Selecciona una maquina</option>
+                                        <option selected value="0" disabled>SELECCIONA UNA MAQUINA</option>
                                         <option *ngFor="let maquina of lista_maquinas;" value="{{maquina.idmaquina}}">
                                             {{maquina.nombre}}
                                         </option>
                                     </select>
                                     <p></p>
-                                    <button (click)="mostrar=true" (click)="addmaquina()"
+                                    <button (click)="mostrar=true" (click)="addmaquina( '' )"
                                         class="btn btn-success btn btn-outline-whrite"
                                         style="margin: 1px; border-radius: 15px; color: white;"
                                         type="button"><b>+</b></button>

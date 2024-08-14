@@ -27,9 +27,21 @@ export class ConexionService {
       status: '/api/entradas/estatus',
       asigna_maquina: '/api/entradas/asigna_maquina',
       estados: '/api/entradas/produccion/estados',
+      cancelar: '/api/entradas/estatus',
       terminada: '/api/entradas/lista/terminadas',
-      Entrada_Usuario: '/api/entradas/lista/maquina'
+      Entrada_Usuario: '/api/entradas/lista/maquina',
+      Historial: '/api/entradas/lista/historial'
   
+    },
+    SERVICIOS: {
+      lista_espera: '/api/servicios/lista/espera',
+      // listaAll: '/api/maquinas/lista/all',
+      registrar: '/api/servicios/registra',
+      lista_cliente: '/api/servicios/lista/espera/cliente',
+      actualizar: '/api/servicios/actualiza',
+      Historial: '/api/servicios/lista/historial'
+      // status: '/api/maquinas/estatus',
+      // Maquina_usuario: '/api/maquinas/lista/usuario'
     },
 
     MAQUINA: {
@@ -60,6 +72,7 @@ export class ConexionService {
 
     BORDADO: {
       lista: '/api/bordados/lista',
+      listades: '/api/bordados/lista/false',
       listaAll: '/api/bordados/lista/all',
       registrar: '/api/bordados/registra',
       actualizar: '/api/bordados/actualiza',
@@ -85,7 +98,9 @@ export class ConexionService {
       actualizar: '/api/cobros/actualiza',
       status: '/api/cobros/estatus',
       detalle: '/api/cobros/detalle',
-      lista_cliente: '/api/cobros/lista/pagar/cliente'
+      lista_cliente: '/api/cobros/lista/pagar/cliente',
+      lista_pendientes: '/api/cobros/lista/pendiente',
+      Historial: '/api/cobros/lista/historial'
 
     },
     PAGO: {
@@ -122,9 +137,21 @@ export class ConexionService {
     let secure_headers = this.secureHeader();
     return this.http.post<any>(this.apiUrl + this.endPoints.COBRO.registrar, data, { headers: secure_headers });
   }
+  public CobrosListaPendiente(): Observable<any> {
+    let secure_headers = this.secureHeader();
+    return this.http.get<any>(this.apiUrl + this.endPoints.COBRO.lista_pendientes, { headers: secure_headers });
+  }
   public CobrosDetalle(id: any,): Observable<any> {
     let secure_headers = this.secureHeader();
     return this.http.get<any>(`${this.apiUrl}${this.endPoints.COBRO.detalle}/${id}`, { headers: secure_headers });
+  }
+  public CobrosActualiza(id: any, data: any): Observable<any> {
+    let secure_headers = this.secureHeader();
+    return this.http.put<any>(`${this.apiUrl}${this.endPoints.COBRO.actualizar}/${id}`, data, { headers: secure_headers });
+  }
+  public CobrosHistorial(data: any): Observable<any> {
+    let secure_headers = this.secureHeader();
+    return this.http.post<any>(this.apiUrl + this.endPoints.COBRO.Historial, data, { headers: secure_headers });
   }
   //Entradas
   public EntradasLista(): Observable<any> {
@@ -163,12 +190,24 @@ export class ConexionService {
     let secure_headers = this.secureHeader();
     return this.http.post<any>(this.apiUrl + this.endPoints.ENTRADAS.estados, data, { headers: secure_headers });
   }
+  public EntradaEstadosCancelar(id: any, data: any): Observable<any>  {
+    let secure_headers = this.secureHeader();
+    return this.http.patch<any>(`${this.apiUrl}${this.endPoints.ENTRADAS.cancelar}/${id}`, data, { headers: secure_headers });
+
+  }
   public EntradaTerminada(id: any,): Observable<any> {
     let secure_headers = this.secureHeader();
     return this.http.get<any>(`${this.apiUrl}${this.endPoints.ENTRADAS.terminada}/${id}`, { headers: secure_headers });
   }
+  public EntradaTerminadas(): Observable<any> {
+    let secure_headers = this.secureHeader();
+    return this.http.get<any>(this.apiUrl + this.endPoints.ENTRADAS.terminada, { headers: secure_headers });
+  }
 
-
+  public EntradaHistorial(data: any): Observable<any> {
+    let secure_headers = this.secureHeader();
+    return this.http.post<any>(this.apiUrl + this.endPoints.ENTRADAS.Historial, data, { headers: secure_headers });
+  }
   //maquinas
   public maquinaLista(): Observable<any> {
     let secure_headers = this.secureHeader();
@@ -248,6 +287,10 @@ export class ConexionService {
     let secure_headers = this.secureHeader();
     return this.http.get<any>(this.apiUrl + this.endPoints.BORDADO.lista, { headers: secure_headers });
   }
+  public BordadoListaD(): Observable<any> {
+    let secure_headers = this.secureHeader();
+    return this.http.get<any>(this.apiUrl + this.endPoints.BORDADO.listades, { headers: secure_headers });
+  }
   public BordadoRegistrar(data: any): Observable<any> {
     let secure_headers = this.secureHeaderfile();
     return this.http.post<any>(this.apiUrl + this.endPoints.BORDADO.registrar, data, { headers: secure_headers });
@@ -279,6 +322,27 @@ export class ConexionService {
   public TecnicaLista(): Observable<any> {
     let secure_headers = this.secureHeader();
     return this.http.get<any>(this.apiUrl + this.endPoints.TECNICA.lista, { headers: secure_headers });
+  }
+  //Servicios 
+  public ServicioRegistrar(data: any): Observable<any> {
+    let secure_headers = this.secureHeader();
+    return this.http.post<any>(this.apiUrl + this.endPoints.SERVICIOS.registrar, data, { headers: secure_headers });
+  }
+  public ServiciosListaClientes(id: any,): Observable<any> {
+    let secure_headers = this.secureHeader();
+    return this.http.get<any>(`${this.apiUrl}${this.endPoints.SERVICIOS.lista_cliente}/${id}`, { headers: secure_headers });
+  }
+  public ServicioActualiza(id: any, data: any): Observable<any> {
+    let secure_headers = this.secureHeader();
+    return this.http.put<any>(`${this.apiUrl}${this.endPoints.SERVICIOS.actualizar}/${id}`, data, { headers: secure_headers });
+  }
+  public ServiciosTerminados(): Observable<any> {
+    let secure_headers = this.secureHeader();
+    return this.http.get<any>(this.apiUrl + this.endPoints.SERVICIOS.lista_espera, { headers: secure_headers });
+  }
+  public ServicioHistorial(data: any): Observable<any> {
+    let secure_headers = this.secureHeader();
+    return this.http.post<any>(this.apiUrl + this.endPoints.SERVICIOS.Historial, data, { headers: secure_headers });
   }
   //metodo para mandar token
   private secureHeader() {

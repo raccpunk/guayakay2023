@@ -17,15 +17,17 @@
                 <tr>
                     <th>ID</th>
                     <th>Modelo</th>
+                    <th>Cabezales</th>
                     <th>descripción</th>
-                    <th>Activo</th>
-                    <th>Acciones</th>
+                    <th data-priority="2">Activo</th>
+                    <th data-priority="1">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let Maquinas of lista_maquinas ; let i = index">
                     <td>{{Maquinas.idmaquina}}</td>
                     <td>{{Maquinas.nombre}}</td>
+                    <td>{{Maquinas.cabezales}}</td>
                     <td>{{Maquinas.descripcion}}</td>
                     <td>
                         <div>
@@ -63,22 +65,38 @@
     </c-card-body>
 </c-card>
 
-<c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal">
+<c-modal #staticBackdropModal data-backdrop="static" id="staticBackdropModal">
     <form (ngSubmit)="onSubmit()" [formGroup]="MaquinasForm">
         <c-modal-header>
             <h5 cModalTitle>Agregar Máquina</h5>
-            <button [cModalToggle]="staticBackdropModal.id" cButtonClose  #button_close_registerM></button>
+            <button [cModalToggle]="staticBackdropModal.id" cButtonClose  #button_close_modal></button>
         </c-modal-header>
         <c-modal-body>
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>modelo</div>
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="nombre" placeholder="Modelo"
+                        <input class="form-control" type="text" formControlName="nombre" placeholder="MODELO"
                             [ngClass]="{ 'is-invalid': submitted && f['nombre'].errors }">
                         <div *ngIf="submitted && f['nombre'].errors" class="invalid-feedback">
-                            <div *ngIf="f['nombre'].errors['required']">Modelo is
-                                required</div>
+                            <div *ngIf="f['nombre'].errors['required']">Modelo es requerido</div>
+                        </div>
+                    </div>
+                    <c-row *ngIf="variable">
+                        <c-alert color="warning">{{mensaje_error}}</c-alert>
+                    </c-row>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div>descripción</div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" formControlName="descripcion" placeholder="DESCRIPCIÓN"
+                            [ngClass]="{ 'is-invalid': submitted && f['descripcion'].errors }">
+                        <div *ngIf="submitted && f['descripcion'].errors" class="invalid-feedback">
+                            <div *ngIf="f['descripcion'].errors['required']">descripciÓn es requerido</div>
                         </div>
                     </div>
                 </div>
@@ -86,11 +104,12 @@
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>cabezales</div>
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="descripcion" placeholder="descripcion"
-                            [ngClass]="{ 'is-invalid': submitted && f['descripcion'].errors }">
-                        <div *ngIf="submitted && f['descripcion'].errors" class="invalid-feedback">
-                            <div *ngIf="f['descripcion'].errors['required']">descripcion is required</div>
+                        <input class="form-control" type="number" formControlName="Cabezales" placeholder="NÚMERO DE CABEZALES" pattern="^[0-9]+"
+                            [ngClass]="{ 'is-invalid': submitted && f['Cabezales'].errors }">
+                        <div *ngIf="submitted && f['Cabezales'].errors" class="invalid-feedback">
+                            <div *ngIf="f['Cabezales'].errors['required']">Cabezales es requerrido y solo admite números</div>
                         </div>
                     </div>
                 </div>
@@ -101,7 +120,7 @@
         </c-modal-body>
         <c-modal-footer>
             <button [cModalToggle]="staticBackdropModal.id" cButton color="secondary">
-                Close
+                Cerrar
             </button>
             <button cButton color="primary" type="submit">Guardar</button>
 
@@ -109,7 +128,7 @@
     </form>
 </c-modal>
 
-<c-modal #staticBackdropModal2 backdrop="static" id="staticBackdropModal2">
+<c-modal #staticBackdropModal2 data-backdrop="static" id="staticBackdropModal2">
     <c-modal-header>
         <h5 cModalTitle>Información de la máquina</h5>
         <button [cModalToggle]="staticBackdropModal2.id" cButtonClose></button>
@@ -124,6 +143,12 @@
             <tr>
                 <th scope="row">Modelo: </th>
                 <td>{{MaquinaU[0].nombre}}</td>
+                <p></p>
+            </tr>
+            <p></p>
+            <tr>
+                <th scope="row">Cabezales: </th>
+                <td>{{MaquinaU[0].cabezal}}</td>
                 <p></p>
             </tr>
             <p></p>
@@ -148,7 +173,7 @@
     </c-modal-footer>
 </c-modal>
 
-<c-modal #staticBackdropModal3 backdrop="static" id="staticBackdropModal3">
+<c-modal #staticBackdropModal3 data-backdrop="static" id="staticBackdropModal3">
     <c-modal-header>
         <h5 cModalTitle></h5>
         <button [cModalToggle]="staticBackdropModal3.id" cButtonClose  #button_close_modal3></button>
@@ -167,7 +192,7 @@
     </c-modal-footer>
 </c-modal>
 
-<c-modal #staticBackdropModal4 backdrop="static" id="staticBackdropModal4">
+<c-modal #staticBackdropModal4 data-backdrop="static" id="staticBackdropModal4">
     <c-modal-header>
         <h5 cModalTitle></h5>
         <button [cModalToggle]="staticBackdropModal4.id" cButtonClose #button_close_modal4></button>
@@ -187,22 +212,22 @@
     </c-modal-footer>
 </c-modal>
 
-<c-modal #staticBackdropModal5 backdrop="static" id="staticBackdropModal5">
+<c-modal #staticBackdropModal5 data-backdrop="static" id="staticBackdropModal5">
     <form (ngSubmit)="onSubmit2()" [formGroup]="editMaquinaForm">
         <c-modal-header>
             <h5 cModalTitle>Editar Máquina</h5>
-            <button [cModalToggle]="staticBackdropModal5.id" cButtonClose></button>
+            <button [cModalToggle]="staticBackdropModal5.id"  #button_close_modal5 cButtonClose></button>
         </c-modal-header>
         <c-modal-body>
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>modelo</div>
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="nombre" placeholder="Modelo"
+                        <input class="form-control" type="text" formControlName="nombre" placeholder="MODELO"
                             [ngClass]="{ 'is-invalid': submitted && f2['nombre'].errors }">
                         <div *ngIf="submitted && f2['nombre'].errors" class="invalid-feedback">
-                            <div *ngIf="f2['nombre'].errors['required']">modelo is
-                                required</div>
+                            <div *ngIf="f2['nombre'].errors['required']">modelo es requerido</div>
                         </div>
                     </div>
                 </div>
@@ -210,16 +235,29 @@
             <p></p>
             <div class="row">
                 <div class="col-sm-12">
+                    <div>descripción</div>
                     <div class="form-group">
-                        <input class="form-control" type="text" formControlName="descripcion" placeholder="descripcion"
+                        <input class="form-control" type="text" formControlName="descripcion" placeholder="DESCRIPCIÓN"
                             [ngClass]="{ 'is-invalid': submitted && f2['descripcion'].errors }">
                         <div *ngIf="submitted && f2['descripcion'].errors" class="invalid-feedback">
-                            <div *ngIf="f2['descripcion'].errors['required']">descripcion is required</div>
+                            <div *ngIf="f2['descripcion'].errors['required']">descripción es requerido</div>
                         </div>
                     </div>
                 </div>
             </div>
-
+            <p></p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div>cabezales</div>
+                    <div class="form-group">
+                        <input class="form-control" type="number" formControlName="Cabezales" placeholder="NÚMERO DE CABEZALES"
+                            [ngClass]="{ 'is-invalid': submitted && f2['Cabezales'].errors }">
+                        <div *ngIf="submitted && f2['Cabezales'].errors" class="invalid-feedback">
+                            <div *ngIf="f2['Cabezales'].errors['required']">Cabezales es requerrido y solo admite números</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <p></p>
             <p></p>
         </c-modal-body>

@@ -1,0 +1,217 @@
+c-card{
+	text-transform: uppercase;
+  }
+  c-modal{
+	text-transform: uppercase;
+  }
+  button{
+	text-transform: uppercase;
+  }
+  option{
+	text-transform: uppercase;
+  }
+  table {
+    width: 100% !important;
+  }
+  select {
+    text-transform: uppercase!important;
+  }
+  .button{
+    background-color: rgb(221, 44, 44);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .buttoncobrar{
+    background-color: rgb(28, 83, 6);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .buttonPDF{
+    background-color: rgb(4, 29, 99);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .btn-danger {
+    margin-top: -5px;
+  }
+
+/* 
+Generic Styling, for Desktops/Laptops 
+*/
+table.responsive-table2 { 
+  width: 100%; 
+  border-collapse: collapse; 
+}
+
+/* Zebra striping */
+// table.responsive-table tr:nth-of-type(odd) { 
+//   background: #eee; 
+// }
+
+table.responsive-table2 th { 
+
+
+  font-weight: bold; 
+}
+
+table.responsive-table2 td, table.responsive-table2 th { 
+  padding: 6px; 
+
+  text-align: left; 
+}
+
+/* 
+Max width before this PARTICULAR table gets nasty
+This query will take effect for any screen smaller than 760px
+and also iPads specifically.
+*/
+@media only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+  
+  /* Force table to not be like tables anymore */
+  table.responsive-table2, table.responsive-table2 thead, table.responsive-table2 tbody, table.responsive-table2 th, table.responsive-table2 td, table.responsive-table2 tr { 
+    display: block; 
+  }
+
+  /* Hide table headers (but not display: none;, for accessibility) */
+  table.responsive-table2 thead tr { 
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  table.responsive-table2 tr { border: 1px solid #ccc; }
+  
+  table.responsive-table2 td { 
+    /* Behave  like a "row" */
+    border: none;
+    border-bottom: 1px solid #eee; 
+    position: relative;
+    padding-left: 50%; 
+  }
+
+  table.responsive-table2 td:before { 
+    /* Now like a table header */
+    position: absolute;
+    /* Top/left values mimic padding */
+    top: 6px;
+    left: 6px;
+    width: 45%; 
+    padding-right: 10px; 
+    white-space: nowrap;
+  }
+
+  /*
+  Label the data
+  */
+  table.responsive-table2 td:nth-of-type(1):before { content: "Folio"; }
+  table.responsive-table2 td:nth-of-type(2):before { content: "Cliente"; }
+  table.responsive-table2 td:nth-of-type(3):before { content: "Fecha"; }
+  table.responsive-table2 td:nth-of-type(4):before { content: "Monto"; }
+  table.responsive-table2 td:nth-of-type(5):before { content: "IVA"; }
+  table.responsive-table2 td:nth-of-type(6):before { content: "Monto Total"; }
+  table.responsive-table2 td:nth-of-type(7):before { content: "Pagado"; }
+  table.responsive-table2 td:nth-of-type(8):before { content: "Saldo"; }
+  table.responsive-table2 td:nth-of-type(9):before { content: "Ficha"; }
+  table.responsive-table2 td:nth-of-type(10):before { content: "Cobrar"; }
+  table.responsive-table2 td:nth-of-type(11):before { content: "Cancelar"; }
+  table.responsive-table2 td:nth-of-type(12):before { content: "PDF"; }
+}
+
+
+
+
+
+
+/* 
+Generic Styling, for Desktops/Laptops 
+*/
+table.responsive-table { 
+  width: 100%; 
+  border-collapse: collapse; 
+}
+
+/* Zebra striping */
+table.responsive-table tr:nth-of-type(odd) { 
+  background: #eee; 
+}
+
+table.responsive-table th { 
+ 
+
+  font-weight: bold; 
+}
+
+table.responsive-table td, table.responsive-table th { 
+  padding: 6px; 
+ 
+  text-align: left; 
+}
+
+/* 
+Max width before this PARTICULAR table gets nasty
+This query will take effect for any screen smaller than 760px
+and also iPads specifically.
+*/
+@media only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+  
+  /* Force table to not be like tables anymore */
+  table.responsive-table, table.responsive-table thead, table.responsive-table tbody, table.responsive-table th, table.responsive-table td, table.responsive-table tr { 
+    display: block; 
+  }
+
+  /* Hide table headers (but not display: none;, for accessibility) */
+  table.responsive-table thead tr { 
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  table.responsive-table tr { border: 1px solid #ccc; }
+  
+  table.responsive-table td { 
+    /* Behave  like a "row" */
+    border: none;
+    border-bottom: 1px solid #eee; 
+    position: relative;
+    padding-left: 50%; 
+  }
+
+  table.responsive-table td:before { 
+    /* Now like a table header */
+    position: absolute;
+    /* Top/left values mimic padding */
+    top: 6px;
+    left: 6px;
+    width: 45%; 
+    padding-right: 10px; 
+    white-space: nowrap;
+  }
+
+  /*
+  Label the data
+  */
+  table.responsive-table td:nth-of-type(1):before { content: "Folio"; }
+  table.responsive-table td:nth-of-type(2):before { content: "Fecha"; }
+  table.responsive-table td:nth-of-type(3):before { content: "Monto"; }
+  table.responsive-table td:nth-of-type(4):before { content: "IVA"; }
+  table.responsive-table td:nth-of-type(5):before { content: "Monto Total"; }
+  table.responsive-table td:nth-of-type(6):before { content: "Pagado"; }
+  table.responsive-table td:nth-of-type(7):before { content: "Saldo"; }
+  table.responsive-table td:nth-of-type(8):before { content: "Ficha"; }
+  table.responsive-table td:nth-of-type(9):before { content: "Cobrar"; }
+  table.responsive-table td:nth-of-type(10):before { content: "Cancelar"; }
+  table.responsive-table td:nth-of-type(11):before { content: "PDF"; }
+}

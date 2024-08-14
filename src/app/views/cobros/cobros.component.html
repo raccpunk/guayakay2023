@@ -10,226 +10,479 @@
     </c-card-header>
 
     <c-card-body>
-
+        <!-- <input type="text" name="ticketNum" (change)="obtenerTrabajosRealizados()"
+        list="defaultNumbers" name="numero" [formControl]="idclienteselect"
+         class="select"
+       /> -->
         <select [formControl]="idclienteselect" (change)="obtenerTrabajosRealizados()" class="form-select">
-            <option value="0">Selecciona un cliente</option>
+            <!-- <datalist id="defaultNumbers"> -->
+            <option value="0" disabled>SELECCIONA UN CLIENTE</option>
+            <option value="-1">SELECCIONA TODOS LOS TRABAJOS Y PAGOS PENDIENTES</option>
             <option *ngFor="let Cliente of lista_clientes" value="{{Cliente.idcliente}}" placeholder="cliente">
                 {{Cliente.nombre}}</option>
+            <!-- </datalist> -->
         </select>
+        <p></p>
+        <div class="table-responsive" *ngIf="this.variabletabla1 == true">
+          
+                <table class="table table-striped table-hover responsive-table2" id="datatable-notaspendientes">
+                    <thead>
+                        <tr>
+                            <th data-priority="1">Folio</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Monto</th>
+                            <th>IVA</th>
+                            <th>Monto Total</th>
+                            <th>Pagado</th>
+                            <th>Saldo</th>
+                            <th data-priority="2">Ficha</th>
+                            <th data-priority="3">Cobrar</th>
+                            <th data-priority="4"></th>
+                            <th data-priority="5" *ngIf="this.permiso != 'recepcion'"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let nPendientes of pendientes; let i = index">
+                            <td>{{ nPendientes.idcobro }}</td>
+                            <td>{{ nPendientes.tblCliente.nombre }}</td>
+                            <td>{{ nPendientes.createdAt | date:'dd/MM/yy' }}</td>
+                            <td>${{ nPendientes.monto_total | number }}</td>
+                            <td>${{ nPendientes.iva_numero | number }}</td>
+                            <td>${{ (nPendientes.monto_total + nPendientes.iva_numero) | number }}</td>
+                            <td>${{ nPendientes.pagado | number }}</td>
+                            <td>${{ (nPendientes.monto_total + nPendientes.iva_numero - nPendientes.pagado) | number }}
+                            </td>
+                            <td>
+                                <button (click)="vercobrosselect(i);" [cModalToggle]="staticBackdropModal.id"
+                                    type="button" class="btn-xs" data-toggle="modal" data-target="#Modaldetalles"
+                                    cButton>DETALLE</button>
+                            </td>
+                            <td>
+                                <a (click)="vercobrosselect(i);" [cModalToggle]="staticBackdropModal2.id" type="button"
+                                    class="buttoncobrar" data-toggle="modal" data-target="#Modalcliente"
+                                    cButton>COBRAR</a>
+                            </td>
+                            <td>
+                                <a *ngIf="this.permiso == 'administrador'" class="button" (click)="Cancelar(i);"
+                                    type="button" data-toggle="modal" data-target="#Modalcliente" cButton>CANCELAR</a>
+                            </td>
+                            <td>
+                                <a *ngIf="this.permiso != 'recepcion'" (click)="vercobrosselect(i); viewPDF()"
+                                    type="button" class="buttonPDF" cButton>PDF</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+          
 
-        <table class="table table-striped table-hover" id="datatable-notaspendientes">
-            <thead>
-                <tr>
-                    <th>folio</th>
-                    <th>Fecha</th>
-                    <th>Monto total</th>
-                    <th>IVA</th>
-                    <th>Ficha</th>
-                    <th>Cobrar</th>
+        </div>
 
+       <div class="table-responsive" *ngIf="this.variabletabla1 == false">
+    <table class="table table-striped table-hover responsive-table" id="datatable-notaspendientes2">
+                <thead>
+                    <tr>
+                        <th>folio</th>
 
-                </tr>
-            </thead>
-            <tbody>
+                        <th>Fecha</th>
+                        <th>Monto </th>
+                        <th>IVA</th>
+                        <th>Monto total</th>
+                        <th>pagado</th>
+                        <th>saldo</th>
+                        <th data-priority="1">Ficha</th>
+                        <th data-priority="2">Cobrar</th>
+                        <th data-priority="3"></th>
+                        <th data-priority="4" *ngIf="this.permiso != 'recepcion'"></th>
 
-                <tr *ngFor="let nPendientes of pendientes; let i = index">
-                    <td>{{nPendientes.idcobro}}</td>
-                    <td>{{nPendientes.createdAt | date:'dd/MM/yy'}}</td>
-                    <td>${{nPendientes.monto_total}}</td>
-                    <td>${{nPendientes.iva_numero}}</td>
+                    </tr>
+                </thead>
+                <tbody>
 
-                    <td><button (click)="vercobrosselect(i)" [cModalToggle]="staticBackdropModal.id" type="button"
-                            class="btn-xs  " data-toggle="modal" data-target="#Modaldetalles" cButton>DETALLE</button>
-                    </td>
-                    <td><a (click)="vercobrosselect(i); Listapagos(i)" [cModalToggle]="staticBackdropModal2.id" type="button"
-                            class="buttondetalles" data-toggle="modal" data-target="#Modalcliente" cButton>PAGAR</a>
-                    </td>
-                    <td><a (click)="vercobrosselect(i); Listapagos(i); viewPDF()" type="button"
-                        class="buttondetalles" cButton>PDF</a>
-                </td>
-                </tr>
+                    <tr *ngFor="let nPendientes of pendientes; let i = index">
+                        <td>{{nPendientes.idcobro}}</td>
 
-            </tbody>
-        </table>
+                        <td>{{nPendientes.createdAt | date:'dd/MM/yy'}}</td>
+                        <td>${{nPendientes.monto_total | number}}</td>
+                        <td>${{nPendientes.iva_numero | number}}</td>
+                        <td>${{(nPendientes.monto_total + nPendientes.iva_numero)| number}}</td>
+                        <td>${{nPendientes.pagado | number}}</td>
+                        <td>${{(nPendientes.monto_total + nPendientes.iva_numero- nPendientes.pagado)| number}}</td>
+                        <td><button (click)="vercobrosselect(i); " [cModalToggle]="staticBackdropModal.id" type="button"
+                                class="btn-xs  " data-toggle="modal" data-target="#Modaldetalles"
+                                cButton>DETALLE</button>
+                        </td>
+                        <td><a (click)="vercobrosselect(i);" [cModalToggle]="staticBackdropModal2.id" type="button"
+                                class="buttoncobrar" data-toggle="modal" data-target="#Modalcliente" cButton>COBRAR</a>
+                        </td>
+                        <td><a *ngIf="this.permiso == 'administrador'" (click)="Cancelar(i);" type="button"
+                                class="button" data-toggle="modal" data-target="#Modalcliente" cButton>CANCELAR</a>
+                        </td>
+                        <td><a *ngIf="this.permiso != 'recepcion'" (click)="vercobrosselect(i); viewPDF()" type="button"
+                                class="buttonPDF" cButton>PDF</a>
+                        </td>
+                    </tr>
 
+                </tbody>
+            </table>
+        </div>
     </c-card-body>
 
 </c-card>
 
-<c-card class="mb-4">
-    <c-card-header>
-        <c-row class="justify-content-end">
-            <c-col lg="">
-                Trabajos Realizados
 
-            </c-col>
-        </c-row>
-    </c-card-header>
-    <c-card-body>
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Fecha de entrada</th>
-                    <th>Prenda</th>
-                    <th>#puntadas</th>
-                    <th>Piezas</th>
-                    <th>Precio Unitario</th>
-                    <th>Precio Total</th>
-                    <th>Accion</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let cPendientes of lista_Terminada, let i = index">
-                    <td>{{cPendientes.tblBordado.nombre}}</td>
-                    <td>{{cPendientes.createdAt | date:'dd/MM/yy'}}</td>
-                    <td>{{cPendientes.prenda}}</td>
-                    <td>{{cPendientes.tblBordado.num_puntadas}}</td>
-                    <td>{{cPendientes.realizadas}}</td>
-                    <td><input (change)="addpreciodinamico(i, unitario_i.value)" type="number" class="form-control"
-                            placeholder="Precio" name="unitario_{{i}}" #unitario_i>
+<div *ngIf="this.variabletabla2 ==  true">
+    <c-card class="mb-4" *ngIf="this.permiso != 'recepcion'">
+        <c-card-header>
+            <c-row class="justify-content-end">
+                <c-col lg="">
+                    Trabajos Realizados
+
+                </c-col>
+            </c-row>
+        </c-card-header>
+        <c-card-body>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover" id="datatable-trabajosrealizados">
+                    <thead>
+                        <tr>
+
+                            <th>Cliente</th>
+                            <th>BORDADO</th>
+                            <th>Fecha de entrada</th>
+                            <th>Prenda</th>
+                            <th>#puntadas</th>
+                            <th>Piezas</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let cPendientes of lista_Terminada, let i = index">
+                            <td>{{cPendientes.tblCliente.nombre}}</td>
+                            <td>{{cPendientes.tblBordado.nombre}}</td>
+
+                            <td>{{cPendientes.createdAt | date:'dd/MM/yy'}}</td>
+                            <td>{{cPendientes.prenda}}</td>
+                            <td>{{cPendientes.tblBordado.num_puntadas}}</td>
+                            <td>{{cPendientes.realizadas}}</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </c-card-body>
+    </c-card>
+</div>
+
+<div *ngIf="this.variabletabla2 ==  true">
+    <c-card class="mb-4" *ngIf="this.permiso != 'recepcion'">
+        <c-card-header>
+            <c-row class="justify-content-end">
+                <c-col lg="">
+                    servicios Realizados
+
+                </c-col>
+            </c-row>
+        </c-card-header>
+        <c-card-body>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover" id="datatable-servicios">
+                    <thead>
+                        <tr>
+                            <th>cliente</th>
+                            <th>concepto</th>
+                            <th>cantidad</th>
+                            <th>observación</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let servicioTerminado of lista_ServicioTerminada, let i = index">
+                            <td>{{servicioTerminado.tblCliente.nombre}}</td>
+                            <td>{{servicioTerminado.concepto}}</td>
+
+                            <td>{{servicioTerminado.cantidad }}</td>
+                            <td>{{servicioTerminado.observacion }}</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </c-card-body>
+    </c-card>
+</div>
+
+<div *ngIf="this.variabletabla2 ==  false">
+    <c-card class="mb-4" *ngIf="this.permiso != 'recepcion'">
+        <c-card-header>
+            <c-row class="justify-content-end">
+                <c-col lg="">
+                    Trabajos Realizados
+
+                </c-col>
+            </c-row>
+        </c-card-header>
+        <c-card-body>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover" id="datatable-trabajosrealizados2">
+                    <thead>
+                        <tr>
+
+
+                            <th>BORDADO</th>
+                            <th>Fecha de entrada</th>
+                            <th>Prenda</th>
+                            <th>#puntadas</th>
+                            <th>Piezas</th>
+                            <th>Precio Unitario</th>
+                            <th>Precio Total</th>
+                            <th>Accion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let cPendientes of lista_Terminada, let i = index">
+
+                            <td>{{cPendientes.tblBordado.nombre}}</td>
+
+                            <td>{{cPendientes.createdAt | date:'dd/MM/yy'}}</td>
+                            <td>{{cPendientes.prenda}}</td>
+                            <td>{{cPendientes.tblBordado.num_puntadas}}</td>
+                            <td>{{cPendientes.realizadas}}</td>
+                            <td>
+
+                                <input [value]="cPendientes.precio[0].ultimo"
+                                    (keyup)="addpreciodinamico(i, unitario_i.value)" type="number" class="form-control"
+                                    placeholder="Precio" name="unitario_{{i}}" #unitario_i>
+
+                                <div style="font-size: 13px;">MAYOREO: ${{cPendientes.precio[0].min}} - MENUDEO:
+                                    ${{cPendientes.precio[0].max }}</div>
+                                <div style="font-size: 14px;"> sugerido: $ {{cPendientes.precio[0].sugerido}}</div>
+                                <p></p>
+                                <div *ngIf="this.variablesuma" style="color: red;">por favor introduzca un Número</div>
+                            </td>
+
+                            <td>${{cPendientes.suma | number}}</td>
+                            <td> <button type="button" class="btn-xs" style="margin-left: 10px"
+                                    (click)="addnota(i,  unitario_i.value); " class="btn-xs buttondetalles"
+                                    cButton>AGREGAR</button>
+                                <p></p>
+                                <button *ngIf="this.permiso == 'administrador'" type="button" class="btn-xs button"
+                                    style="margin-left: 10px" (click)="cancelar1(i) "
+                                    [cModalToggle]="staticBackdropModal6.id" cButton>CANCELAR</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </c-card-body>
+    </c-card>
+</div>
+
+<div *ngIf="this.variabletabla2 ==  false">
+    <c-card class="mb-4" *ngIf="this.permiso != 'recepcion'">
+        <c-card-header>
+            <c-row class="justify-content-end">
+                <c-col lg="">
+                    Servicios Realizados
+
+                </c-col>
+            </c-row>
+        </c-card-header>
+        <c-card-body>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover" id="datatable-servicios2">
+                    <thead>
+                        <tr>
+
+
+                            <th>concepto</th>
+                            <th>observación</th>
+                            <th>cantidad</th>
+                            <th>Precio unitario</th>
+                            <th>Precio TOTAL</th>
+                            <th>Accion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let servicioTerminado of lista_ServicioTerminada, let i = index">
+
+                            <td>{{servicioTerminado.concepto}}</td>
+                            <td>{{servicioTerminado.observacion }}</td>
+                            <td>{{servicioTerminado.cantidad }}</td>
+                          
+
+                            <td>
+
+                                <input (keyup)="addpreciodinamico2(i, unitario_i.value)" type="number"
+                                    class="form-control" placeholder="Precio" name="unitario_{{i}}" #unitario_i>
+
+
+                                <p></p>
+
+                            </td>
+
+                            <td>${{servicioTerminado.suma2 | number}}</td>
+                            <td> <button type="button" class="btn-xs" style="margin-left: 10px"
+                                    (click)="addnota2(i,  unitario_i.value); " class="btn-xs buttondetalles"
+                                    cButton>AGREGAR</button>
+                                <p></p>
+                                <button *ngIf="this.permiso == 'administrador'" type="button" class="btn-xs button"
+                                    style="margin-left: 10px" (click)="cancelarservicio(i) "
+                                    [cModalToggle]="staticBackdropModal7.id" cButton>CANCELAR</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </c-card-body>
+    </c-card>
+</div>
+
+<div *ngIf="this.variabletabla2 == false">
+    <c-card class="mb-4" *ngIf="this.permiso != 'recepcion'">
+        <c-card-header>
+            <c-row class="justify-content-end">
+                <c-col lg="">
+                    Nota Creada
+                </c-col>
+
+            </c-row>
+        </c-card-header>
+        <c-card-body>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Prenda</th>
+                            <th>#puntadas</th>
+                            <th>Piezas</th>
+                            <th>Precio Unitario</th>
+                            <th>Precio Total</th>
+                            <th>Accion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr *ngFor="let cPendientes of notacreada, let i = index">
+                            <td>{{cPendientes.tblBordado.nombre}}</td>
+                            <td>{{cPendientes.prenda}}</td>
+                            <td>{{cPendientes.tblBordado.num_puntadas}}</td>
+                            <td>{{cPendientes.realizadas}}</td>
+                            <td> {{cPendientes.unitario | number}}</td>
+                            <td>${{cPendientes.suma | number}}</td>
+
+                            <td> <a type="button" class="btn-xs" style="margin-left: 10px"
+                                    (click)="remove(i)">QUITAR</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <thead>
+                        <tr>
+
+
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>${{sumafinal | number}}</th>
+                            <th></th>
+                        </tr>
+
+                    </thead>
+
+                </table>
+            </div>
+
+            <c-row class="justify-content-md-center">
+                <c-col>
+                    <form [formGroup]="NotaForm " (ngSubmit)="registrarNota()">
+
+                        <c-row class="justify-content-md-center">
+                            <div class="col-sm-12 col-md-3">
+                                <select formControlName="tipo_cobro" class="form-select" (change)='activarbuttonnota()'
+                                    aria-label="Default select example">
+                                    <option value="0" disabled>TIPO COBRO</option>
+                                    <option value="nota">Nota</option>
+                                    <option value="credito">Credito</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3">
+                                <select formControlName="tipo_pago" class="form-select"
+                                    aria-label="Default select example">
+                                    <option value="0" disabled>FORMA PAGO</option>
+                                    <option value="efectivo">Efectivo</option>
+                                    <option value="transferencia">Transferencia</option>
+                                    <option value="cheque">cheque</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <select class="space" formControlName="facturas" class="form-select"
+                                    (change)='activarbuttonfactura()' aria-label="Default select example">
+                                    <option value="0" disabled>FACTURA</option>
+                                    <option value="no">no</option>
+                                    <option value="si">si</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+
+                                <div class="form-group">
+                                    <input class="form-control" (change)='ativarbutton()' type="number"
+                                        formControlName="iva_porcentaje" maxlength="38" placeholder="IVA">
+
+                                </div>
+                                <div *ngIf="this.variable" style="color: red;">por favor introduzca un Número de 0-99
+                                </div>
+                            </div>
+                        </c-row>
                         <p></p>
-
-                    </td>
-                    <td>${{cPendientes.suma}}</td>
-                    <td> <button type="button" class="btn-xs" style="margin-left: 10px"
-                            (click)="addnota(i, unitario_i.value); " class="btn-xs buttondetalles"
-                            cButton>AGREGAR</button></td>
-                </tr>
-            </tbody>
-        </table>
-    </c-card-body>
-</c-card>
-
-
-<c-card class="mb-4">
-    <c-card-header>
-        <c-row class="justify-content-end">
-            <c-col lg="">
-                Nota Creada
-            </c-col>
-
-        </c-row>
-    </c-card-header>
-    <c-card-body>
-        <table class="table table-striped table-hover">
-
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Prenda</th>
-                    <th>#puntadas</th>
-                    <th>Piezas</th>
-                    <th>Precio Unitario</th>
-                    <th>Precio Total</th>
-                    <th>Accion</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let cPendientes of notacreada, let i = index">
-                    <td>{{cPendientes.tblBordado.nombre}}</td>
-                    <td>{{cPendientes.prenda}}</td>
-                    <td>{{cPendientes.tblBordado.num_puntadas}}</td>
-                    <td>{{cPendientes.realizadas}}</td>
-                    <td> {{cPendientes.unitario}}</td>
-                    <td>${{cPendientes.suma}}</td>
-
-                    <td> <a type="button" class="btn-xs" style="margin-left: 10px" (click)="remove(i)">QUITAR</a></td>
-                </tr>
-            </tbody>
-            <thead>
-                <tr>
-
-
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th>${{sumafinal}}</th>
-                    <th></th>
-                </tr>
-
-            </thead>
-
-        </table>
-
-        <c-row class="justify-content-md-center">
-            <c-col>
-                <form [formGroup]="NotaForm " (ngSubmit)="registrarNota()">
-
-                    <c-row class="justify-content-md-center">
-                        <div class="col-sm-12 col-md-3">
-                            <select formControlName="tipo_cobro" class="form-select"
-                                aria-label="Default select example">
-                                <option value="0" disabled>Selecciona modo de pago</option>
-                                <option value="nota">Nota</option>
-                                <option value="credito">Credito</option>
-                            </select>
+                        <div class="row">
+                            <div class="form-group">
+                                <button cButton type="button" class="position-relative mx-2" type="submit"
+                                    [disabled]="isDisabled">
+                                    Guardar la nota
+                                    <c-badge color="danger" position="top-end" shape="rounded-pill"></c-badge>
+                                </button>
+                            </div>
                         </div>
+                    </form>
+                </c-col>
+            </c-row>
+        </c-card-body>
 
-                        <div class="col-sm-12 col-md-3">
-                            <select formControlName="tipo_pago" class="form-select" aria-label="Default select example">
-                                <option value="0" disabled>seleccionar tipo de pago</option>
-                                <option value="efectivo">Efectivo</option>
-                                <option value="transferencia">Transaferencia</option>
-                            </select>
-                        </div>
-                        <div class="col-sm-12 col-md-3">
-                            <select class="space" formControlName="facturas" class="form-select"
-                                aria-label="Default select example">
-                                <option value="0" disabled>¿se requiere factura?</option>
-                                <option value="no">no</option>
-                                <option value="si">si</option>
-                            </select>
-                        </div>
-                        <div class="col-sm-12 col-md-3">
-                         
-                                    <div class="form-group">
-                                        <input class="form-control" (change)='ativarbutton()' type="text" formControlName="iva_porcentaje" maxlength="38"
-                                            placeholder="Iva">
-                                    </div>
-                                    <div *ngIf="this.variable" style="color: red;">por favor introduzca un Número de 0-99</div>
-                        </div>
-                    </c-row>
-                    <p></p>
-                    <div class="row">
-                        <div class="form-group">
-                            <button cButton type="button" class="position-relative mx-2" type="submit"
-                                [disabled]="isDisabled">
-                                Guardar la nota
-                                <c-badge color="danger" position="top-end" shape="rounded-pill"></c-badge>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </c-col>
-        </c-row>
-    </c-card-body>
+    </c-card>
+</div>
 
-</c-card>
-
-<c-modal class="modal-xl" #staticBackdropModal backdrop="static" id="staticBackdropModal">
+<c-modal class="modal-xl" #staticBackdropModal data-backdrop="static" id="staticBackdropModal">
     <!-- <form (ngSubmit)="onSubmit()" [formGroup]="MaquinasForm"> -->
     <c-modal-header>
         <h4 class="information mt-4 text-left">DETALLES DE PAGO</h4>
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>CLIENTE: {{this.nombreC}}</th>
-                    <!-- <th>CLIENTE: {{clienteAselect[0].idcliente}}</th>  -->
-                    <th>FOLIO: {{this.folio}}</th>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <!-- <th>CLIENTE: {{this.nombreC}}</th> -->
+                        <!-- <th>CLIENTE: {{clienteAselect[0].idcliente}}</th>  -->
+                        <th>FOLIO: {{this.folio}}</th>
+                        <!-- <th>cobro: {{this.tipo_cobros}}</th> -->
 
+                    </tr>
+                </thead>
+
+                <tr>
+                    <!-- <th>FECHA: {{cobroSelect[0].createdAt | date:'dd/MM/yy'}}</th> -->
+                    <th>PAGADO: ${{this.pagadon | number }}</th>
+                    <th>SALDO: $ {{this.saldof | number}}</th>
 
                 </tr>
-            </thead>
+            </table>
+        </div>
 
-            <tr>
-                <th>FECHA: {{cobroSelect[0].createdAt | date:'dd/MM/yy'}}</th>
-                <th>PAGADO: ${{sumaf}}</th>
-                <th>SALDO: $ {{this.saldop}}</th>
-            </tr>
-        </table>
         <button [cModalToggle]="staticBackdropModal.id" cButtonClose></button>
     </c-modal-header>
     <c-modal-body>
@@ -239,91 +492,96 @@
         </div>
         <div class="row">
             <div class="form-group">
-                <header>LISTA DE PRODUCTOS</header>
+                <header>LISTA DE PRODUCTOS / SERVICIOS</header>
             </div>
         </div>
         <div class="row">
             <div class="form-group">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>FOLIO </th>
-                            <th>NOMBRE BORDADO </th>
-                            <th>PRENDA </th>
-                            <th>CANTIDAD </th>
-                            <th>PRECIO UNITARIO</th>
-                            <th>PRECIO TOTAL </th>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>FOLIO </th>
+                                <th>NOMBRE BORDADO / SERVICIO </th>
+                                <th>PRENDA </th>
+                                <th>CANTIDAD </th>
+                                <th>PRECIO UNITARIO</th>
+                                <th>PRECIO TOTAL </th>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let listapago of cobro_productos">
-                            <td>{{listapago.identrada}}</td>
-                            <td>{{listapago.bordado}}</td>
-                            <td>{{listapago.prenda}}</td>
-                            <td>{{listapago.nuprendas}}</td>
-                            <td>${{listapago.preciou}}</td>
-                            <td>${{listapago.preciotc}}</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let listapago of cobro_productos">
+                                <td>{{listapago.identrada}}</td>
+                                <td>{{listapago.bordado}}</td>
+                                <td>{{listapago.prenda}}</td>
+                                <td>{{listapago.nuprendas}}</td>
+                                <td>${{listapago.preciou | number}}</td>
+                                <td>${{listapago.preciotc | number}}</td>
 
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>SUB TOTAL:</td>
-                            <td>${{this.preciot}}</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>IVA {{this.ivap}}%</td>
-                            <td>${{this.ivanum}}</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>TOTAL</td>
-                            <td>${{this.totalfinal}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>SUB TOTAL:</td>
+                                <td>${{this.preciot | number}} </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>IVA {{this.ivap}}%</td>
+                                <td>${{this.ivanum | number}}</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>TOTAL</td>
+                                <td>${{this.totalfinal | number}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
         <div class="row">
             <div class="form-group">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <header style="color: #550503;">LISTA DE PAGOS</header>
-                        <tr>
-                            <th>FECHA DE PAGO</th>
-                            <th>MONTO</th>
-                            <th>SALDO</th>
-                            <th>FACTURA</th>
-                            <th>METODO DE PAGO</th>
-                        </tr>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <header>LISTA DE PAGOS</header>
+                            <tr>
+                                <th>FECHA DE PAGO</th>
+                                <th>MONTO</th>
+                                <th>SALDO</th>
+                                <th>FACTURA</th>
+                                <th>METODO DE PAGO</th>
+                            </tr>
 
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let listapago of lista_pagos">
-                            <td>{{listapago.fecha | date:'dd/MM/yy'}}</td>
-                            <!-- <td>{{montoTotal}}</td> -->
-                            <td>${{listapago.monto}}</td>
-                            <td>${{listapago.saldo}}</td>
-                            <td>{{listapago.factura}}</td>
-                            <td>{{listapago.metodpago}}</td>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let listapago of lista_pagos">
+                                <td>{{listapago.fecha | date:'dd/MM/yy'}}</td>
+                                <!-- <td>{{montoTotal}}</td> -->
+                                <td>${{listapago.monto | number}}</td>
+                                <td>${{listapago.saldo | number}}</td>
+                                <td>{{this.facturas}}</td>
+                                <td>{{this.tipo_cobros}}</td>
 
-                        </tr>
+                            </tr>
 
-                    </tbody>
+                        </tbody>
 
 
 
-                </table>
+                    </table>
+                </div>
             </div>
         </div>
     </c-modal-body>
@@ -342,14 +600,14 @@
     <!-- </form> -->
 </c-modal>
 
-<c-modal #staticBackdropModal2 backdrop="static" id="staticBackdropModal2">
+<c-modal #staticBackdropModal2 data-backdrop="static" id="staticBackdropModal2">
     <!-- <form (ngSubmit)="onSubmit()" [formGroup]="MaquinasForm"> -->
     <c-modal-header>
         <h4 class="information mt-4 text-left">DETALLES DE PAGO</h4>
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th>CLIENTE: {{this.nombreC}}</th>
+                    <!-- <th>CLIENTE: {{this.nombreC}}</th> -->
                     <!-- <th>CLIENTE: {{clienteAselect[0].idcliente}}</th>  -->
                     <th>FOLIO: {{this.folio}}</th>
 
@@ -358,36 +616,74 @@
             </thead>
 
             <tr>
-                <th>FECHA: {{cobroSelect[0].createdAt | date:'dd/MM/yy'}}</th>
-           
+                <!-- <th>FECHA: {{cobroSelect[0].createdAt | date:'dd/MM/yy'}}</th> -->
+
             </tr>
         </table>
-        <button [cModalToggle]="staticBackdropModal2.id" cButtonClose></button>
+        <button [cModalToggle]="staticBackdropModal2.id" cButtonClose #button_close_detalles></button>
     </c-modal-header>
     <c-modal-body>
 
-        <h4 class="">TOTAL NETO: ${{this.totalfinal}}</h4>
+        <h4 class="">TOTAL NETO: ${{this.totalfinal | number}}</h4>
         <P></P>
-        <h4 class="">SALDO PENDIENTE: $ {{this.saldop}}</h4>
+        <h4 class="">SALDO PENDIENTE: $ {{this.saldof | number}}</h4>
+        <hr>
+        <div>
+            <h5 style="color: rgb(43, 126, 5); font-size: 2rem;">CAMBIO: $ {{this.cambio | number}}</h5>
+        </div>
+
         <div class="modal-body">
-            <form [formGroup]="cobrarForm">
+            <form [formGroup]="cobrarForm" (keydown)="keyDownFunction($event)">
                 <div class="row">
                     <div class="form-group">
-                        <input class="form-control" formControlName="abono" type="text" placeholder="Abono">
-
+                        <div>ABONO</div>
+                        <input #abonoInput class="form-control" formControlName="abono" type="number"
+                            placeholder="ABONO" (keyup)="keyDownFunction2()">
+                        <div *ngIf="this.variable2" style="color: red;">por favor introduzca un número mayor a cero o
+                            menor al saldo</div>
                     </div>
                 </div>
 
             </form>
         </div>
     </c-modal-body>
- 
-  
+
+
     <c-modal-footer>
 
-        <button cButton color="primary" type="submit" type="submit"
-        (click)="registrarcobro(cobroSelect[0].idcobro)">Understood</button>
+        <button cButton type="submit" (click)="registrarcobro(this.folio)">GUARDAR</button>
 
     </c-modal-footer>
     <!-- </form> -->
+</c-modal>
+
+
+<c-modal alignment="center" backdrop="static" #staticBackdropModal6 id="staticBackdropModal6">
+
+    <c-modal-header>
+        <h4 style="font-weight: bold;" cModalTitle>¿Está seguro de que desea cancelar? Una vez realizado esto, no se
+            podrán realizar cambios.</h4>
+    </c-modal-header>
+
+    <c-modal-footer>
+        <button cButton [cModalToggle]="staticBackdropModal6.id" color="secondary">Cerrar</button>
+        <button cButton [cModalToggle]="staticBackdropModal6.id" color="secondary"
+            (click)="cancelar2()">Aceptar</button>
+    </c-modal-footer>
+
+</c-modal>
+
+<c-modal alignment="center" backdrop="static" #staticBackdropModal7 id="staticBackdropModal7">
+
+    <c-modal-header>
+        <h4 style="font-weight: bold;" cModalTitle>¿Está seguro de que desea cancelar? Una vez realizado esto, no se
+            podrán realizar cambios.</h4>
+    </c-modal-header>
+
+    <c-modal-footer>
+        <button cButton [cModalToggle]="staticBackdropModal7.id" color="secondary">Cerrar</button>
+        <button cButton [cModalToggle]="staticBackdropModal7.id" color="secondary"
+            (click)="cancelarservicio2()">Aceptar</button>
+    </c-modal-footer>
+
 </c-modal>
